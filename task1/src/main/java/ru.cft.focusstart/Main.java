@@ -1,4 +1,5 @@
-package ru.cft.focusstart.fedyaev;
+package ru.cft.focusstart;
+
 import java.util.Scanner;
 
 public class Main {
@@ -58,4 +59,3 @@ public class Main {
         System.out.println();
     }
 }
-
