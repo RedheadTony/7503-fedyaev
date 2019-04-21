@@ -39,25 +39,18 @@ public class Triangle extends Shape {
     @Override
     protected double getSquare() {
         double halfP = getPerimeter() / 2;
-
         return Math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c));
     }
 
     @Override
     public void getInfo() {
         super.getInfo();
-        System.out.print("Сторона a:\t\t\t");
-        System.out.println(a);
-        System.out.print("Угол напротив a:\t");
-        System.out.println(angleA);
-        System.out.print("Сторона b:\t\t\t");
-        System.out.println(b);
-        System.out.print("Угол напротив b:\t");
-        System.out.println(angleB);
-        System.out.print("Сторона c:\t\t\t");
-        System.out.println(c);
-        System.out.print("Угол напротив c:\t");
-        System.out.println(angleC);
+        System.out.printf("Сторона a:\t\t%.2f\n", a);
+        System.out.printf("Угол напротив a:\t%.2f\n", angleA);
+        System.out.printf("Сторона b:\t\t%.2f\n", b);
+        System.out.printf("Угол напротив b:\t%.2f\n", angleB);
+        System.out.printf("Сторона c:\t\t%.2f\n", c);
+        System.out.printf("Угол напротив c:\t%.2f\n", angleC);
     }
 
     @Override
@@ -65,18 +58,18 @@ public class Triangle extends Shape {
         super.getInfo(fileName);
         try {
             FileWriter file = new FileWriter(fileName, true);
-            file.write("Сторона a:\t\t\t");
-            file.write(a + "\n");
-            file.write("Угол напротив a:\t");
-            file.write(angleA + "\n");
-            file.write("Сторона b:\t\t\t");
-            file.write(b + "\n");
-            file.write("Угол напротив b:\t");
-            file.write(angleB + "\n");
-            file.write("Сторона c:\t\t\t");
-            file.write(c + "\n");
-            file.write("Угол напротив c:\t");
-            file.write(angleC + "\n");
+            String tmp = String.format("Сторона a:\t\t%.2f\n", a);
+            file.write(tmp);
+            tmp = String.format("Угол напротив a:\t%.2f\n", angleA);
+            file.write(tmp);
+            tmp = String.format("Сторона b:\t\t%.2f\n", b);
+            file.write(tmp);
+            tmp = String.format("Угол напротив b:\t%.2f\n", angleB);
+            file.write(tmp);
+            tmp = String.format("Сторона c:\t\t%.2f\n", c);
+            file.write(tmp);
+            tmp = String.format("Угол напротив c:\t%.2f\n", angleC);
+            file.write(tmp);
             file.close();
         } catch (IOException e) {
             System.out.println("Не удалось создать файл!");

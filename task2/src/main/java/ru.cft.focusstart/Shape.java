@@ -15,23 +15,19 @@ public abstract class Shape {
     abstract protected double getSquare();
 
     public void getInfo() {
-        System.out.print("Тип фигуры:\t\t\t");
-        System.out.println(name);
-        System.out.print("Периметр:\t\t\t");
-        System.out.println(getPerimeter());
-        System.out.print("Площадь:\t\t\t");
-        System.out.println(getSquare());
+        System.out.println("Тип фигуры:\t\t" + name);
+        System.out.printf("Периметр:\t\t%.2f\n", getPerimeter());
+        System.out.printf("Площадь:\t\t%.2f\n", getSquare());
     }
 
     public void getInfo(String fileName) {
         try {
             FileWriter file = new FileWriter(fileName);
-            file.write("Тип фигуры:\t\t\t");
-            file.write(name + "\n");
-            file.write("Периметр:\t\t\t");
-            file.write(getPerimeter() + "\n");
-            file.write("Площадь:\t\t\t");
-            file.write(getSquare() + "\n");
+            file.write("Тип фигуры:\t\t" + name + "\n");
+            String tmp = String.format("Периметр:\t\t%.2f\n", getPerimeter());
+            file.write(tmp);
+            tmp = String.format("Площадь:\t\t%.2f\n", getSquare());
+            file.write(tmp);
             file.close();
         } catch (IOException e) {
             System.out.println("Не удалось создать файл!");

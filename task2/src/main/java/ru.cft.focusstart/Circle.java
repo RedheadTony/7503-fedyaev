@@ -28,10 +28,8 @@ public class Circle extends Shape {
     @Override
     public void getInfo() {
         super.getInfo();
-        System.out.print("Радиус:\t\t\t\t");
-        System.out.println(radius);
-        System.out.print("Диаметр:\t\t\t");
-        System.out.println(radius*radius);
+        System.out.printf("Радиус:\t\t\t%.2f\n", radius);
+        System.out.printf("Диаметр:\t\t%.2f\n", radius*radius);
     }
 
     @Override
@@ -39,10 +37,10 @@ public class Circle extends Shape {
         super.getInfo(fileName);
         try {
             FileWriter file = new FileWriter(fileName, true);
-            file.write("Радиус:\t\t\t\t");
-            file.write(radius + "\n");
-            file.write("Диаметр:\t\t\t");
-            file.write(radius*radius + "\n");
+            String tmp = String.format("Радиус:\t\t\t%.2f\n", radius);
+            file.write(tmp);
+            tmp = String.format("Диаметр:\t\t%.2f\n", radius*radius);
+            file.write(tmp);
             file.close();
         } catch (IOException e) {
             System.out.println("Не удалось создать файл!");

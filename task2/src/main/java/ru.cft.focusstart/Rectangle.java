@@ -45,12 +45,9 @@ public class Rectangle extends Shape {
     @Override
     public void getInfo() {
         super.getInfo();
-        System.out.print("Диагональ:\t\t\t");
-        System.out.println(getDiagonal());
-        System.out.print("Длина:\t\t\t\t");
-        System.out.println(length);
-        System.out.print("Ширина:\t\t\t\t");
-        System.out.println(width);
+        System.out.printf("Диагональ:\t\t%.2f\n", getDiagonal());
+        System.out.printf("Длина:\t\t\t%.2f\n", length);
+        System.out.printf("Ширина:\t\t\t%.2f\n", width);
     }
 
     @Override
@@ -58,12 +55,12 @@ public class Rectangle extends Shape {
         super.getInfo(fileName);
         try {
             FileWriter file = new FileWriter(fileName, true);
-            file.write("Диагональ:\t\t\t");
-            file.write(getDiagonal() + "\n");
-            file.write("Длина:\t\t\t\t");
-            file.write(length + "\n");
-            file.write("Ширина:\t\t\t\t");
-            file.write(width + "\n");
+            String tmp = String.format("Диагональ:\t\t%.2f\n", getDiagonal());
+            file.write(tmp);
+            tmp = String.format("Длина:\t\t\t%.2f\n", length);
+            file.write(tmp);
+            tmp = String.format("Ширина:\t\t\t%.2f\n", width);
+            file.write(tmp);
             file.close();
         } catch (IOException e) {
             System.out.println("Не удалось создать файл!");

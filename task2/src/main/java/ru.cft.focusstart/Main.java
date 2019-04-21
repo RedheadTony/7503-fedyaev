@@ -8,16 +8,13 @@ import java.io.IOException;
 public class Main {
     private static String shapeName;
     private static String shapeParams;
-    enum types { CIRCLE, RECTANGLE, TRIANGLE }; // как юзать это!!!
 
     public static void main(String[] args) {
-
-//        System.out.println("Введите имя входного файла (обязательно)");
-//        String input = new Scanner(System.in).next();
-//        System.out.println("Введите имя выходного файла (не обязательно)");
-//        String output = new Scanner(System.in).next();
-        String input = "/home/antony/study/java/input3.txt";
-        String output ="/home/antony/study/java/output.txt";
+        String input = args[0];
+        String output ="";
+        if(args.length > 1) {
+            output = args[1];
+        }
         readInputFile(input);
         if(shapeName == null || shapeName == "" || shapeParams == null || shapeParams == "") {
             System.out.println("Ошибка в входном файле!");
@@ -25,21 +22,26 @@ public class Main {
         }
 
         Shape shape;
-        switch (shapeName) {
-            case "CIRCLE":
+        ShapeType type = ShapeType.NOT_FOUND;
+        try {
+            type = ShapeType.valueOf(shapeName);
+        } catch (Exception e) {
+            System.out.println("Неизвестная фигура");
+        }
+        switch (type) {
+            case CIRCLE:
                 shape = new Circle(shapeName, shapeParams);
                 break;
-            case "RECTANGLE":
+            case RECTANGLE:
                 shape = new Rectangle(shapeName, shapeParams);
                 break;
-            case "TRIANGLE":
+            case TRIANGLE:
                 shape = new Triangle(shapeName, shapeParams);
                 break;
             default:
-                System.out.println("Неизвестная фигура");
                 return;
         }
-        if(output != "" && output != null) {
+        if(output != null && !output.equals("")) {
             shape.getInfo(output);
             return;
         }
