@@ -1,28 +1,45 @@
 package ru.cft.focusstart;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 public class Triangle extends Shape {
-    private float a;
-    private float b;
-    private float c;
+    private final float a;
+    private final float b;
+    private final float c;
 
     private double angleA;
     private double angleB;
     private double angleC;
 
-    public Triangle(String name, String params) {
+    public Triangle(String name, String params) throws Exception {
         super(name);
         String [] splitParams = params.split(" ");
-        try {
-            a = Float.valueOf(splitParams[0].trim()).floatValue();
-            b = Float.valueOf(splitParams[1].trim()).floatValue();
-            c = Float.valueOf(splitParams[2].trim()).floatValue();
-            setAngles();
-        } catch (NumberFormatException e) {
-            System.out.println("Ошибка в параметрах фигуры!");
+        if(splitParams.length > 3) {
+            Exception err = new Exception("Указаны лишние параметры!");
+            throw err;
         }
+        try {
+            a = Float.valueOf(splitParams[0].trim());
+            b = Float.valueOf(splitParams[1].trim());
+            c = Float.valueOf(splitParams[2].trim());
+            if(checkExistenceOfTriangle()) {
+                setAngles();
+            } else {
+                Exception ex = new Exception("Неверные длины треугольника!");
+                throw ex;
+            }
+        } catch (NumberFormatException e) {
+            Exception ex = new Exception("Ошибка в параметрах фигуры!", e);
+            throw ex;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Exception ex = new Exception("Указаны не все стороны!", e);
+            throw ex;
+        }
+    }
+
+    private boolean checkExistenceOfTriangle() {
+        if(a + b < c) return false;
+        if(a + c < b) return false;
+        if(b + c < a) return false;
+        return true;
     }
 
     @Override
@@ -43,36 +60,14 @@ public class Triangle extends Shape {
     }
 
     @Override
-    public void getInfo() {
-        super.getInfo();
-        System.out.printf("Сторона a:\t\t%.2f\n", a);
-        System.out.printf("Угол напротив a:\t%.2f\n", angleA);
-        System.out.printf("Сторона b:\t\t%.2f\n", b);
-        System.out.printf("Угол напротив b:\t%.2f\n", angleB);
-        System.out.printf("Сторона c:\t\t%.2f\n", c);
-        System.out.printf("Угол напротив c:\t%.2f\n", angleC);
-    }
-
-    @Override
-    public void getInfo(String fileName) {
-        super.getInfo(fileName);
-        try {
-            FileWriter file = new FileWriter(fileName, true);
-            String tmp = String.format("Сторона a:\t\t%.2f\n", a);
-            file.write(tmp);
-            tmp = String.format("Угол напротив a:\t%.2f\n", angleA);
-            file.write(tmp);
-            tmp = String.format("Сторона b:\t\t%.2f\n", b);
-            file.write(tmp);
-            tmp = String.format("Угол напротив b:\t%.2f\n", angleB);
-            file.write(tmp);
-            tmp = String.format("Сторона c:\t\t%.2f\n", c);
-            file.write(tmp);
-            tmp = String.format("Угол напротив c:\t%.2f\n", angleC);
-            file.write(tmp);
-            file.close();
-        } catch (IOException e) {
-            System.out.println("Не удалось создать файл!");
-        }
+    public StringBuffer buildOutString() {
+        StringBuffer sb = super.buildOutString();
+        sb.append("Сторона a:\t\t").append(a).append("\n");
+        sb.append("Угол напротив a:\t").append(angleA).append("\n");
+        sb.append("Сторона b:\t\t").append(b).append("\n");
+        sb.append("Угол напротив b:\t").append(angleB).append("\n");
+        sb.append("Сторона c:\t\t").append(c).append("\n");
+        sb.append("Угол напротив c:\t").append(angleC).append("\n");
+        return sb;
     }
 }

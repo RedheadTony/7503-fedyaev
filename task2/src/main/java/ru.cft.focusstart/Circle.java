@@ -1,17 +1,15 @@
 package ru.cft.focusstart;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 public class Circle extends Shape {
-    private float radius;
+    private final float radius;
 
-    public Circle(String name, String params) {
+    Circle(String name, String params) throws Exception {
         super(name);
         try {
-            radius = Float.valueOf(params.trim()).floatValue();
+            radius = Float.valueOf(params.trim());
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка в параметрах фигуры!");
+            Exception ex = new Exception("Ошибка в параметрах фигуры!");
+            throw ex;
         }
     }
 
@@ -26,24 +24,10 @@ public class Circle extends Shape {
     }
 
     @Override
-    public void getInfo() {
-        super.getInfo();
-        System.out.printf("Радиус:\t\t\t%.2f\n", radius);
-        System.out.printf("Диаметр:\t\t%.2f\n", radius*radius);
-    }
-
-    @Override
-    public void getInfo(String fileName) {
-        super.getInfo(fileName);
-        try {
-            FileWriter file = new FileWriter(fileName, true);
-            String tmp = String.format("Радиус:\t\t\t%.2f\n", radius);
-            file.write(tmp);
-            tmp = String.format("Диаметр:\t\t%.2f\n", radius*radius);
-            file.write(tmp);
-            file.close();
-        } catch (IOException e) {
-            System.out.println("Не удалось создать файл!");
-        }
+    public StringBuffer buildOutString() {
+        StringBuffer sb = super.buildOutString();
+        sb.append("Радиус:\t\t\t").append(radius).append("\n");
+        sb.append("Диаметр:\t\t").append(radius*radius).append("\n");
+        return sb;
     }
 }

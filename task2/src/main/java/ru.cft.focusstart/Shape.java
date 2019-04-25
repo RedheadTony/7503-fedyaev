@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public abstract class Shape {
-    protected String name;
+    protected final String name;
 
     public Shape(String name) {
         this.name = name;
@@ -14,21 +14,21 @@ public abstract class Shape {
 
     abstract protected double getSquare();
 
-    public void getInfo() {
-        System.out.println("Тип фигуры:\t\t" + name);
-        System.out.printf("Периметр:\t\t%.2f\n", getPerimeter());
-        System.out.printf("Площадь:\t\t%.2f\n", getSquare());
+    public StringBuffer buildOutString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Тип фигуры:\t\t").append(name).append("\n");
+        sb.append("Периметр:\t\t").append(getPerimeter()).append("\n");
+        sb.append("Площадь:\t\t").append(getSquare()).append("\n");
+        return sb;
     }
 
-    public void getInfo(String fileName) {
-        try {
-            FileWriter file = new FileWriter(fileName);
-            file.write("Тип фигуры:\t\t" + name + "\n");
-            String tmp = String.format("Периметр:\t\t%.2f\n", getPerimeter());
-            file.write(tmp);
-            tmp = String.format("Площадь:\t\t%.2f\n", getSquare());
-            file.write(tmp);
-            file.close();
+    public void printInfo() {
+        System.out.println(buildOutString().toString());
+    }
+
+    public void printInfo(String fileName) {
+        try (FileWriter file = new FileWriter(fileName)) {
+            file.write(buildOutString().toString());
         } catch (IOException e) {
             System.out.println("Не удалось создать файл!");
         }
