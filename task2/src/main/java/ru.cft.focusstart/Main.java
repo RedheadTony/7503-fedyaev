@@ -7,14 +7,12 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        String input;
-        try {
-            input = args[0];
-        } catch (ArrayIndexOutOfBoundsException e) {
+        if (args.length == 0) {
             System.err.println("Отсутствуют аргументы!");
             return;
         }
 
+        String input = args[0];
         String output = null;
 
         if(args.length > 1) {
@@ -22,18 +20,16 @@ public class Main {
         }
 
         ShapeData shapeData;
-        String shapeName;
-        String shapeParams;
         try {
             shapeData = readInputFile(input);
-            shapeName = shapeData.getShapeName();
-            shapeParams = shapeData.getShapeParams();
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return;
         }
 
-        Shape shape;
+        String shapeName = shapeData.getShapeName();
+        String shapeParams = shapeData.getShapeParams();
+
         ShapeType type;
         try {
             type = ShapeType.valueOf(shapeName);
@@ -42,6 +38,7 @@ public class Main {
             return;
         }
 
+        Shape shape;
         try {
             switch (type) {
                 case CIRCLE:
@@ -71,8 +68,7 @@ public class Main {
     private static ShapeData readInputFile(String fileName) throws Exception {
         String name;
         String params;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             name = reader.readLine();
             params = reader.readLine();
 
@@ -88,7 +84,6 @@ public class Main {
             Exception ex = new Exception("Ошибка чтения файла!");
             throw ex;
         }
-        ShapeData data = new ShapeData(name, params);
-        return data;
+        return new ShapeData(name, params);
     }
 }

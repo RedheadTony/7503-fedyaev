@@ -10,9 +10,9 @@ public abstract class Shape {
         this.name = name;
     }
 
-    abstract protected double getPerimeter();
+    protected abstract double getPerimeter();
 
-    abstract protected double getSquare();
+    protected abstract double getSquare();
 
     public StringBuffer buildOutString() {
         StringBuffer sb = new StringBuffer();

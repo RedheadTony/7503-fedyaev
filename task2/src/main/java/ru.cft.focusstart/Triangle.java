@@ -5,32 +5,34 @@ public class Triangle extends Shape {
     private final float b;
     private final float c;
 
-    private double angleA;
-    private double angleB;
-    private double angleC;
+    private final double angleA;
+    private final double angleB;
+    private final double angleC;
 
-    public Triangle(String name, String params) throws Exception {
+    public Triangle(String name, String params) throws IllegalArgumentException {
         super(name);
         String [] splitParams = params.split(" ");
         if(splitParams.length > 3) {
-            Exception err = new Exception("Указаны лишние параметры!");
+            IllegalArgumentException err = new IllegalArgumentException("Указаны лишние параметры!");
+            throw err;
+        }
+        if(splitParams.length < 3) {
+            IllegalArgumentException err = new IllegalArgumentException("Указаны не все стороны!");
             throw err;
         }
         try {
             a = Float.valueOf(splitParams[0].trim());
             b = Float.valueOf(splitParams[1].trim());
             c = Float.valueOf(splitParams[2].trim());
-            if(checkExistenceOfTriangle()) {
-                setAngles();
-            } else {
-                Exception ex = new Exception("Неверные длины треугольника!");
+            if(!checkExistenceOfTriangle()) {
+                IllegalArgumentException ex = new IllegalArgumentException("Неверные длины треугольника!");
                 throw ex;
             }
+            angleA = Math.toDegrees(Math.acos((b*b + c*c - a*a) / (2*c*b)));
+            angleB = Math.toDegrees(Math.acos((a*a + c*c - b*b) / (2*a*c)));
+            angleC = Math.toDegrees(Math.acos((a*a + b*b - c*c) / (2*a*b)));
         } catch (NumberFormatException e) {
-            Exception ex = new Exception("Ошибка в параметрах фигуры!", e);
-            throw ex;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Exception ex = new Exception("Указаны не все стороны!", e);
+            IllegalArgumentException ex = new IllegalArgumentException("Ошибка в параметрах фигуры!", e);
             throw ex;
         }
     }
@@ -45,12 +47,6 @@ public class Triangle extends Shape {
     @Override
     protected double getPerimeter() {
         return a + b + c;
-    }
-
-    private void setAngles() {
-        angleA = Math.toDegrees(Math.acos((b*b + c*c - a*a) / (2*c*b)));
-        angleB = Math.toDegrees(Math.acos((a*a + c*c - b*b) / (2*a*c)));
-        angleC = Math.toDegrees(Math.acos((a*a + b*b - c*c) / (2*a*b)));
     }
 
     @Override

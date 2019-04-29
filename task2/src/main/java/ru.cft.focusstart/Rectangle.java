@@ -8,7 +8,11 @@ public class Rectangle extends Shape {
         super(name);
         String [] splitParams = params.split(" ");
         if(splitParams.length > 2) {
-            Exception err = new Exception("Указаны лишние параметры!");
+            IllegalArgumentException err = new IllegalArgumentException("Указаны лишние параметры!");
+            throw err;
+        }
+        if(splitParams.length < 2) {
+            IllegalArgumentException err = new IllegalArgumentException("Указаны не все стороны!");
             throw err;
         }
         float tmpWidth;
@@ -19,16 +23,13 @@ public class Rectangle extends Shape {
             if(tmpWidth < tmpLength) {
                 width = tmpWidth;
                 length = tmpLength;
-                return;
+            } else {
+                width = tmpLength;
+                length = tmpWidth;
             }
-            width = tmpLength;
-            length = tmpWidth;
         } catch (NumberFormatException e) {
-            Exception err = new Exception("Ошибка в параметрах фигуры!");
+            IllegalArgumentException err = new IllegalArgumentException("Ошибка в параметрах фигуры!");
             throw err;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Exception ex = new Exception("Указаны не все стороны!", e);
-            throw ex;
         }
     }
 
