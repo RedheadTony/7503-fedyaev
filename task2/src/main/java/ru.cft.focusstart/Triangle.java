@@ -51,8 +51,8 @@ public class Triangle extends Shape {
 
     @Override
     protected double getSquare() {
-        double halfP = getPerimeter() / 2;
-        return Math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c));
+        double halfPerimeter = getPerimeter() / 2;
+        return Math.sqrt(halfPerimeter * (halfPerimeter - a) * (halfPerimeter - b) * (halfPerimeter - c));
     }
 
     @Override
