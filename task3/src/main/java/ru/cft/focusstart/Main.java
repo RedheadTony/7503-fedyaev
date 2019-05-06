@@ -57,36 +57,18 @@ public class Main {
             jPanel.add(button);
         }
 
-//        Icon closedIcon = new ImageIcon(SwingApplication.class.getResource("/icons/closed.png"));
-//        Icon openIcon = new ImageIcon(SwingApplication.class.getResource("/icons/zero.png"));
-//        Icon minedIcon = new ImageIcon(SwingApplication.class.getResource("/icons/mined.png"));
-
-
-//        JButton button1 = new JButton();
-//        button1.setIcon(closedIcon);
-//        button1.addActionListener(e -> button1.setIcon(openIcon));
-//        button1.setPreferredSize(buttonPreferredSize);
-//        jPanel.add(button1);
-//
-//        JButton button2 = new JButton();
-//        button2.setIcon(closedIcon);
-//        button2.addActionListener(e -> button2.setIcon(openIcon));
-//        button2.setPreferredSize(buttonPreferredSize);
-//        jPanel.add(button2);
-//
-//        JButton button3 = new JButton();
-//        button3.setIcon(closedIcon);
-//        button3.addActionListener(e -> button3.setIcon(minedIcon));
-//        button3.setPreferredSize(buttonPreferredSize);
-//        jPanel.add(button3);
-//
-//        JButton button4 = new JButton();
-//        button4.setIcon(closedIcon);
-//        button4.addActionListener(e -> button4.setIcon(openIcon));
-//        button4.setPreferredSize(buttonPreferredSize);
-//        jPanel.add(button4);
-//
         frame.setLayout(new BorderLayout());
+
+//        JPanel topPanel = new JPanel();
+//        topPanel.setLayout(new GridLayout(1, 3));
+//        JLabel mineCounter = new JLabel("10");
+//        JLabel title = new JLabel("Сапер");
+//        JLabel timer = new JLabel("1:20");
+//        topPanel.add(mineCounter);
+//        topPanel.add(title);
+//        topPanel.add(timer);
+//        frame.add(topPanel, BorderLayout.CENTER);
+
         frame.add(jPanel, BorderLayout.CENTER);
 
 //        JLabel jLabel = new JLabel(new ImageIcon(SwingApplication.class.getResource("/icons/win.png")));
@@ -95,5 +77,6 @@ public class Main {
         frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
+        controller.setAllIcons();
     }
 }
