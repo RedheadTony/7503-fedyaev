@@ -9,32 +9,29 @@ public class Triangle extends Shape {
     private final double angleB;
     private final double angleC;
 
-    public Triangle(String name, String params) throws IllegalArgumentException {
+    public Triangle(String name, String params) {
         super(name);
         String [] splitParams = params.split(" ");
         if(splitParams.length > 3) {
-            IllegalArgumentException err = new IllegalArgumentException("Указаны лишние параметры!");
-            throw err;
+            throw new IllegalArgumentException("Указаны лишние параметры!");
         }
         if(splitParams.length < 3) {
-            IllegalArgumentException err = new IllegalArgumentException("Указаны не все стороны!");
-            throw err;
+            throw new IllegalArgumentException("Указаны не все стороны!");
         }
         try {
             a = Float.valueOf(splitParams[0].trim());
             b = Float.valueOf(splitParams[1].trim());
             c = Float.valueOf(splitParams[2].trim());
-            if(!checkExistenceOfTriangle()) {
-                IllegalArgumentException ex = new IllegalArgumentException("Неверные длины треугольника!");
-                throw ex;
-            }
-            angleA = Math.toDegrees(Math.acos((b*b + c*c - a*a) / (2*c*b)));
-            angleB = Math.toDegrees(Math.acos((a*a + c*c - b*b) / (2*a*c)));
-            angleC = Math.toDegrees(Math.acos((a*a + b*b - c*c) / (2*a*b)));
         } catch (NumberFormatException e) {
-            IllegalArgumentException ex = new IllegalArgumentException("Ошибка в параметрах фигуры!", e);
-            throw ex;
+            throw new IllegalArgumentException("Ошибка в параметрах фигуры!", e);
         }
+        
+        if(!checkExistenceOfTriangle()) {
+            throw new IllegalArgumentException("Неверные длины треугольника!");
+        }
+        angleA = Math.toDegrees(Math.acos((b*b + c*c - a*a) / (2*c*b)));
+        angleB = Math.toDegrees(Math.acos((a*a + c*c - b*b) / (2*a*c)));
+        angleC = Math.toDegrees(Math.acos((a*a + b*b - c*c) / (2*a*b)));
     }
 
     private boolean checkExistenceOfTriangle() {
