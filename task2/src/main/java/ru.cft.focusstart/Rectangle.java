@@ -4,16 +4,14 @@ public class Rectangle extends Shape {
     private final float width;
     private final float length;
 
-    Rectangle(String name, String params) throws Exception {
+    public Rectangle(String name, String params) {
         super(name);
         String [] splitParams = params.split(" ");
         if(splitParams.length > 2) {
-            IllegalArgumentException err = new IllegalArgumentException("Указаны лишние параметры!");
-            throw err;
+            throw new IllegalArgumentException("Указаны лишние параметры!");
         }
         if(splitParams.length < 2) {
-            IllegalArgumentException err = new IllegalArgumentException("Указаны не все стороны!");
-            throw err;
+            throw new IllegalArgumentException("Указаны не все стороны!");
         }
         float tmpWidth;
         float tmpLength;
@@ -28,8 +26,7 @@ public class Rectangle extends Shape {
                 length = tmpWidth;
             }
         } catch (NumberFormatException e) {
-            IllegalArgumentException err = new IllegalArgumentException("Ошибка в параметрах фигуры!");
-            throw err;
+            throw new IllegalArgumentException("Ошибка в параметрах фигуры!", e);
         }
     }
 

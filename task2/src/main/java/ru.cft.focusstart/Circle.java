@@ -3,13 +3,12 @@ package ru.cft.focusstart;
 public class Circle extends Shape {
     private final float radius;
 
-    Circle(String name, String params) throws IllegalArgumentException {
+    public Circle(String name, String params) {
         super(name);
         try {
             radius = Float.valueOf(params.trim());
         } catch (NumberFormatException e) {
-            IllegalArgumentException ex = new IllegalArgumentException("Ошибка в параметрах фигуры!");
-            throw ex;
+            throw new IllegalArgumentException("Ошибка в параметрах фигуры!", e);
         }
     }
 

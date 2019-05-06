@@ -65,25 +65,21 @@ public class Main {
         }
     }
 
-    private static ShapeData readInputFile(String fileName) throws Exception {
-        String name;
-        String params;
+    private static ShapeData readInputFile(String fileName) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            name = reader.readLine();
-            params = reader.readLine();
+            String name = reader.readLine();
+            String params = reader.readLine();
 
             if(name == null || params == null) {
-                Exception ex = new Exception("В файле не достаточно строк!");
-                throw ex;
+                throw new IOException("В файле не достаточно строк!");
             }
 
+            return new ShapeData(name, params);
+
         } catch (FileNotFoundException e) {
-            Exception ex = new Exception("Файл не найден!");
-            throw ex;
+            throw new IOException("Файл не найден!", e);
         } catch (IOException e) {
-            Exception ex = new Exception("Ошибка чтения файла!");
-            throw ex;
+            throw new IOException("Ошибка чтения файла!", e);
         }
-        return new ShapeData(name, params);
     }
 }
