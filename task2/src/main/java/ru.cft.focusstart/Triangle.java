@@ -11,11 +11,11 @@ public class Triangle extends Shape {
 
     public Triangle(String name, String params) {
         super(name);
-        String [] splitParams = params.split(" ");
-        if(splitParams.length > 3) {
+        String[] splitParams = params.split(" ");
+        if (splitParams.length > 3) {
             throw new IllegalArgumentException("Указаны лишние параметры!");
         }
-        if(splitParams.length < 3) {
+        if (splitParams.length < 3) {
             throw new IllegalArgumentException("Указаны не все стороны!");
         }
         try {
@@ -25,19 +25,19 @@ public class Triangle extends Shape {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Ошибка в параметрах фигуры!", e);
         }
-        
-        if(!checkExistenceOfTriangle()) {
+
+        if (!checkExistenceOfTriangle()) {
             throw new IllegalArgumentException("Неверные длины треугольника!");
         }
-        angleA = Math.toDegrees(Math.acos((b*b + c*c - a*a) / (2*c*b)));
-        angleB = Math.toDegrees(Math.acos((a*a + c*c - b*b) / (2*a*c)));
-        angleC = Math.toDegrees(Math.acos((a*a + b*b - c*c) / (2*a*b)));
+        angleA = Math.toDegrees(Math.acos((b * b + c * c - a * a) / (2 * c * b)));
+        angleB = Math.toDegrees(Math.acos((a * a + c * c - b * b) / (2 * a * c)));
+        angleC = Math.toDegrees(Math.acos((a * a + b * b - c * c) / (2 * a * b)));
     }
 
     private boolean checkExistenceOfTriangle() {
-        if(a + b < c) return false;
-        if(a + c < b) return false;
-        if(b + c < a) return false;
+        if (a + b < c) return false;
+        if (a + c < b) return false;
+        if (b + c < a) return false;
         return true;
     }
 

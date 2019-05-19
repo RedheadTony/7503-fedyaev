@@ -15,17 +15,30 @@ public class Main {
         String input = args[0];
         String output = null;
 
-        if(args.length > 1) {
+        if (args.length > 1) {
             output = args[1];
         }
 
-        ShapeData shapeData;
+        Shape shape;
+
         try {
-            shapeData = readInputFile(input);
+            shape = getShape(input);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return;
         }
+
+        if (output != null && !output.equals("")) {
+            shape.printInfo(output);
+        } else {
+            shape.printInfo();
+        }
+    }
+
+    private static Shape getShape(String input) throws Exception {
+        ShapeData shapeData;
+
+        shapeData = readInputFile(input);
 
         String shapeName = shapeData.getShapeName();
         String shapeParams = shapeData.getShapeParams();
@@ -34,34 +47,18 @@ public class Main {
         try {
             type = ShapeType.valueOf(shapeName);
         } catch (Exception e) {
-            System.err.println("Неизвестная фигура");
-            return;
+            throw new IllegalArgumentException("Неизвестная фигура", e);
         }
 
-        Shape shape;
-        try {
-            switch (type) {
-                case CIRCLE:
-                    shape = new Circle(shapeName, shapeParams);
-                    break;
-                case RECTANGLE:
-                    shape = new Rectangle(shapeName, shapeParams);
-                    break;
-                case TRIANGLE:
-                    shape = new Triangle(shapeName, shapeParams);
-                    break;
-                default:
-                    return;
-            }
-        } catch (Exception e) {
-                System.err.println(e.getMessage());
-            return;
-        }
-
-        if(output != null && !output.equals("")) {
-            shape.printInfo(output);
-        } else {
-            shape.printInfo();
+        switch (type) {
+            case CIRCLE:
+                return new Circle(shapeName, shapeParams);
+            case RECTANGLE:
+                return new Rectangle(shapeName, shapeParams);
+            case TRIANGLE:
+                return new Triangle(shapeName, shapeParams);
+            default:
+                throw new IllegalArgumentException("Неизвестная фигура");
         }
     }
 
@@ -70,7 +67,7 @@ public class Main {
             String name = reader.readLine();
             String params = reader.readLine();
 
-            if(name == null || params == null) {
+            if (name == null || params == null) {
                 throw new IOException("В файле не достаточно строк!");
             }
 
