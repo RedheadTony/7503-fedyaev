@@ -4,9 +4,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public abstract class Shape {
-    protected final String name;
+    private final String name;
 
-    public Shape(String name) {
+    protected Shape(String name) {
         this.name = name;
     }
 

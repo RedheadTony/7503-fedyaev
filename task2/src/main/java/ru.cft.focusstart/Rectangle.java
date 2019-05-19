@@ -6,11 +6,11 @@ public class Rectangle extends Shape {
 
     public Rectangle(String name, String params) {
         super(name);
-        String [] splitParams = params.split(" ");
-        if(splitParams.length > 2) {
+        String[] splitParams = params.split(" ");
+        if (splitParams.length > 2) {
             throw new IllegalArgumentException("Указаны лишние параметры!");
         }
-        if(splitParams.length < 2) {
+        if (splitParams.length < 2) {
             throw new IllegalArgumentException("Указаны не все стороны!");
         }
         float tmpWidth;
@@ -18,7 +18,7 @@ public class Rectangle extends Shape {
         try {
             tmpWidth = Float.valueOf(splitParams[0].trim());
             tmpLength = Float.valueOf(splitParams[1].trim());
-            if(tmpWidth < tmpLength) {
+            if (tmpWidth < tmpLength) {
                 width = tmpWidth;
                 length = tmpLength;
             } else {
