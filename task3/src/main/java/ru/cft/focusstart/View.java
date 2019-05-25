@@ -125,9 +125,9 @@ public class View {
     public void syncWithModel(int row, int column) {
         ButtonCell cell = model.getButtonCell(row, column);
         boolean isMined = cell.getIsMined();
-        String status = cell.getStatus();
+        ButtonCellStates status = cell.getStatus();
         switch (status) {
-            case "opened":
+            case OPENED:
                 if (isMined) {
                     buttons[row][column].setIcon(mine);
                     break;
@@ -136,10 +136,10 @@ public class View {
                 Icon icon = getNumber(number);
                 buttons[row][column].setIcon(icon);
                 break;
-            case "closed":
+            case CLOSED:
                 buttons[row][column].setIcon(closed);
                 break;
-            case "flagged":
+            case FLAGGED:
                 buttons[row][column].setIcon(flag);
                 break;
         }

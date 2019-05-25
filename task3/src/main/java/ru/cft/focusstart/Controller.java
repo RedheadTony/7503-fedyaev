@@ -14,13 +14,13 @@ public class Controller {
             return;
         }
         ButtonCell cell = model.getButtonCell(row, column);
-        String status = cell.getStatus();
-        if (status.equals("opened")) {
+        ButtonCellStates status = cell.getStatus();
+        if (status == ButtonCellStates.OPENED) {
             return;
         }
         cell.open();
         status = cell.getStatus();
-        if (cell.getIsMined() && status.equals("opened")) {
+        if (cell.getIsMined() && status == ButtonCellStates.OPENED) {
             model.setIsLose(true);
         } else {
             model.openedCellsIncrement();
@@ -37,7 +37,7 @@ public class Controller {
             for (int j = column - 1; j <= column + 1; j++) {
                 try {
                     ButtonCell cell = model.getButtonCell(i, j);
-                    if (!cell.getIsMined() && !cell.getStatus().equals("opened")) {
+                    if (!cell.getIsMined() && !(cell.getStatus() == ButtonCellStates.OPENED)) {
                         onLeftClick(i, j);
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {

@@ -4,7 +4,7 @@ public class ButtonCell {
     private final int number;
     private final boolean isMined;
 
-    private String status = "closed";
+    private ButtonCellStates status = ButtonCellStates.CLOSED;
 
     public ButtonCell(int number, boolean isMined) {
         this.number = number;
@@ -20,24 +20,24 @@ public class ButtonCell {
     }
 
     public void open() {
-        if (status.equals("flagged")) {
+        if (status == ButtonCellStates.FLAGGED) {
             return;
         }
-        status = "opened";
+        status = ButtonCellStates.OPENED;
     }
 
     public void nextMark() {
-        if (status.equals("opened")) {
+        if (status == ButtonCellStates.OPENED) {
             return;
         }
-        if (status.equals("closed")) {
-            status = "flagged";
+        if (status == ButtonCellStates.CLOSED) {
+            status = ButtonCellStates.FLAGGED;
         } else {
-            status = "closed";
+            status = ButtonCellStates.CLOSED;
         }
     }
 
-    public String getStatus() {
+    public ButtonCellStates getStatus() {
         return status;
     }
 }
