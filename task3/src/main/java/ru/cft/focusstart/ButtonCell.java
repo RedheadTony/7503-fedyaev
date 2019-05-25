@@ -27,17 +27,13 @@ public class ButtonCell {
     }
 
     public void nextMark() {
-        System.out.println("nextMark");
         if (status.equals("opened")) {
             return;
         }
-        System.out.println(status.equals("closed"));
         if (status.equals("closed")) {
             status = "flagged";
-            System.out.println("FLAGGED");
         } else {
             status = "closed";
-            System.out.println("CLOSED");
         }
     }
 

@@ -4,9 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 public class View {
-    private NewModel model;
-    private NewController controller;
+    private Model model;
+    private Controller controller;
 
     private JButton[][] buttons = new JButton[10][10];
 
@@ -51,10 +53,10 @@ public class View {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JMenuItem exitItem = new JMenuItem("Exit");
-        exitItem.addActionListener(e -> System.exit(0));
+        JMenuItem exitItem = new JMenuItem("New game");
+        exitItem.addActionListener(e -> controller.startNewGame());
 
-        JMenu jMenu = new JMenu("File");
+        JMenu jMenu = new JMenu("Game");
         jMenu.add(exitItem);
 
         JMenuBar jMenuBar = new JMenuBar();
@@ -77,13 +79,6 @@ public class View {
                 int rowIndex = row;
                 int columnIndex = column;
                 button.addMouseListener(new java.awt.event.MouseAdapter() {
-//                public void mouseEntered(java.awt.event.MouseEvent evt) {
-//                    button.setBackground(Color.GREEN);
-//                }
-
-//                public void mouseExited(java.awt.event.MouseEvent evt) {
-//                    button.setBackground(UIManager.getColor("control"));
-//                }
 
                     public void mouseClicked(MouseEvent e) {
                     if (e.getButton() == 1) {
@@ -107,19 +102,26 @@ public class View {
         frame.setVisible(true);
     }
 
-    public void setController(NewController controller) {
+    public void setController(Controller controller) {
         this.controller = controller;
     }
 
-    public void setModel(NewModel model) {
+    public void setModel(Model model) {
         this.model = model;
+    }
+
+    public void resetField() {
+        for (int row = 0; row < 10; row ++) {
+            for (int column = 0; column < 10; column++) {
+                buttons[row][column].setIcon(closed);
+            }
+        }
     }
 
     public void syncWithModel(int row, int column) {
         ButtonCell cell = model.getButtonCell(row, column);
         boolean isMined = cell.getIsMined();
         String status = cell.getStatus();
-        System.out.println(status);
         switch (status) {
             case "opened":
                 if (isMined) {
@@ -127,7 +129,6 @@ public class View {
                     break;
                 }
                 int number = cell.getNumber();
-                System.out.println(number);
                 Icon icon = getNumber(number);
                 buttons[row][column].setIcon(icon);
                 break;
@@ -137,6 +138,14 @@ public class View {
             case "flagged":
                 buttons[row][column].setIcon(flag);
                 break;
+        }
+        if (model.getIsWin()) {
+            showMessageDialog(null, "You won!!!");
+            return;
+        }
+        if (model.getIsLose()) {
+            showMessageDialog(null, "You lose!!!");
+            return;
         }
     }
 }

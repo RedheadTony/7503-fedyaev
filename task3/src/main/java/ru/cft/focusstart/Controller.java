@@ -1,85 +1,66 @@
 package ru.cft.focusstart;
 
-import javax.swing.*;
-
 public class Controller {
-    private Modal modal;
-    private JButton [] buttons = new JButton [81];
+    private Model model;
+    private View view;
 
-    public Controller() {
-        modal = new Modal();
-        modal.generateMines();
+    public void startNewGame() {
+        model.startGame();
+        view.resetField();
     }
 
-    private Icon getCurrentIcon(int index) {
-        if (modal.getItem(index) == 1) {
-            return new ImageIcon(Main.class.getResource("/icons/mine.png"));
+    public void onLeftClick(int row, int column) {
+        if (model.getIsWin() || model.getIsLose()) {
+            return;
         }
-
-        int number = modal.getNumber(index);
-        System.out.println("////////////////////");
-        System.out.println(index);
-        System.out.println(number);
-        System.out.println("////////////////////");
-        switch (number) {
-            case 1:
-                return new ImageIcon(Main.class.getResource("/icons/one.png"));
-            case 2:
-                return new ImageIcon(Main.class.getResource("/icons/two.png"));
-            case 3:
-                return new ImageIcon(Main.class.getResource("/icons/three.png"));
-            case 4:
-                return new ImageIcon(Main.class.getResource("/icons/four.png"));
-            case 5:
-                return new ImageIcon(Main.class.getResource("/icons/five.png"));
-            case 6:
-                return new ImageIcon(Main.class.getResource("/icons/six.png"));
-            case 7:
-                return new ImageIcon(Main.class.getResource("/icons/seven.png"));
-            case 8:
-                return new ImageIcon(Main.class.getResource("/icons/eight.png"));
-            default:
-                return new ImageIcon(Main.class.getResource("/icons/zero.png"));
+        ButtonCell cell = model.getButtonCell(row, column);
+        String status = cell.getStatus();
+        if (status.equals("opened")) {
+            return;
         }
-//        return icon;
-    }
-
-    public void setAllIcons() {
-        for (int i = 0; i < 81; i++ ) {
-            buttons[i].setIcon(getCurrentIcon(i));
-        }
-    }
-
-    public void getIcon(int index) {
-        if(modal.getGameOver()) return;
-        if(modal.getIsOpenedItem(index)) return;
-        if(modal.getIsMarkered(index)) return;
-        modal.setIsOpenedItem(index);
-        if(modal.getItem(index) == 1) {
-            Icon icon = new ImageIcon(Main.class.getResource("/icons/mine.png"));
-            modal.setGameOver(true);
-            buttons[index].setIcon(icon);
+        cell.open();
+        status = cell.getStatus();
+        if (cell.getIsMined() && status.equals("opened")) {
+            model.setIsLose(true);
         } else {
-            Icon icon = new ImageIcon(Main.class.getResource("/icons/zero.png"));
-            buttons[index].setIcon(icon);
+            model.openedCellsIncrement();
+        }
+        view.syncWithModel(row, column);
+        if (!cell.getIsMined() && cell.getNumber() == 0) {
+            openCellsAround(row, column);
         }
     }
 
-    public void toggleMine(int index) {
-        if(modal.getGameOver()) return;
-        if(modal.getIsOpenedItem(index)) return;
-        modal.toggleMarker(index);
-        Icon icon;
-        boolean isMarkered = modal.getIsMarkered(index);
-        if(isMarkered) {
-            icon = new ImageIcon(Main.class.getResource("/icons/flag.png"));
-        } else {
-            icon = new ImageIcon(Main.class.getResource("/icons/closed.png"));
+    public void openCellsAround(int row, int column) {
+        for (int i = row - 1; i <= row + 1; i ++) {
+            for (int j = column - 1; j <= column + 1; j++) {
+                try {
+                    ButtonCell cell = model.getButtonCell(i, j);
+                    if (!cell.getIsMined() && !cell.getStatus().equals("opened")) {
+                        onLeftClick(i, j);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println(e);
+                }
+            }
         }
-        buttons[index].setIcon(icon);
+
     }
 
-    public void setButtonItem(int index, JButton button) {
-        buttons[index] = button;
+    public void onRightClick(int row, int column) {
+        if (model.getIsWin() || model.getIsLose()) {
+            return;
+        }
+        ButtonCell cell = model.getButtonCell(row, column);
+        cell.nextMark();
+        view.syncWithModel(row, column);
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    public void setView(View view) {
+        this.view = view;
     }
 }
