@@ -9,8 +9,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class View {
     private Model model;
     private Controller controller;
+    private static final Settings settings = new Settings();
 
-    private JButton[][] buttons = new JButton[10][10];
+    private JButton[][] buttons = new JButton[settings.getSize()][settings.getSize()];
 
     private static final Icon one = new ImageIcon(Main.class.getResource("/icons/one.png"));
     private static final Icon two = new ImageIcon(Main.class.getResource("/icons/two.png"));
@@ -50,6 +51,8 @@ public class View {
     }
 
     public void renderBoard() {
+        int size = settings.getSize();
+
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,10 +70,10 @@ public class View {
         JPanel jPanel = new JPanel();
         frame.add(jPanel);
 
-        jPanel.setLayout(new GridLayout(10, 10));
+        jPanel.setLayout(new GridLayout(size, size));
         Dimension buttonPreferredSize = new Dimension(40, 40);
-        for (int row = 0; row < 10; row++) {
-            for (int column = 0; column < 10; column++) {
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
                 JButton button = new JButton();
                 button.setPreferredSize(buttonPreferredSize);
 
@@ -81,11 +84,11 @@ public class View {
                 button.addMouseListener(new java.awt.event.MouseAdapter() {
 
                     public void mouseClicked(MouseEvent e) {
-                    if (e.getButton() == 1) {
-                        controller.onLeftClick(rowIndex, columnIndex);
-                    } else if (e.getButton() == 3) {
-                        controller.onRightClick(rowIndex, columnIndex);
-                    }
+                        if (e.getButton() == 1) {
+                            controller.onLeftClick(rowIndex, columnIndex);
+                        } else if (e.getButton() == 3) {
+                            controller.onRightClick(rowIndex, columnIndex);
+                        }
                     }
                 });
                 buttons[row][column] = button;
@@ -111,8 +114,9 @@ public class View {
     }
 
     public void resetField() {
-        for (int row = 0; row < 10; row ++) {
-            for (int column = 0; column < 10; column++) {
+        int size = settings.getSize();
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
                 buttons[row][column].setIcon(closed);
             }
         }

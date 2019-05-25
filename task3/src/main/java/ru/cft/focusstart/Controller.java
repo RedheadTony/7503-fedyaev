@@ -24,6 +24,7 @@ public class Controller {
             model.setIsLose(true);
         } else {
             model.openedCellsIncrement();
+            model.checkIsWin();
         }
         view.syncWithModel(row, column);
         if (!cell.getIsMined() && cell.getNumber() == 0) {
@@ -32,7 +33,7 @@ public class Controller {
     }
 
     public void openCellsAround(int row, int column) {
-        for (int i = row - 1; i <= row + 1; i ++) {
+        for (int i = row - 1; i <= row + 1; i++) {
             for (int j = column - 1; j <= column + 1; j++) {
                 try {
                     ButtonCell cell = model.getButtonCell(i, j);
@@ -40,7 +41,7 @@ public class Controller {
                         onLeftClick(i, j);
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println(e);
+//                    System.err.println(e);
                 }
             }
         }

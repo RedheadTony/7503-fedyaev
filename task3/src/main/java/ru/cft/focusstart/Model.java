@@ -3,15 +3,10 @@ package ru.cft.focusstart;
 import java.util.Random;
 
 public class Model {
-//    public void main(String[] args) {
-//        startGame();
-//    }
 
-    private static final int size = 10;
+    private static final Settings settings = new Settings();
 
-    private static final int mineCount = 10;
-
-    private ButtonCell[][] cells = new ButtonCell[size][size];
+    private ButtonCell[][] cells = new ButtonCell[settings.getSize()][settings.getSize()];
 
     private boolean isWin = false;
     private boolean isLose = false;
@@ -33,14 +28,21 @@ public class Model {
         this.isLose = isLose;
     }
 
-    public void openedCellsIncrement() {
-        openedCellsCounter++;
+    public void checkIsWin() {
+        int size = settings.getSize();
+        int mineCount = settings.getMineCount();
         if (openedCellsCounter == size * size - mineCount) {
             setIsWin(true);
         }
     }
 
+    public void openedCellsIncrement() {
+        openedCellsCounter++;
+    }
+
     public void startGame() {
+        int size = settings.getSize();
+        int mineCount = settings.getMineCount();
         setIsLose(false);
         setIsWin(false);
         openedCellsCounter = 0;
@@ -69,11 +71,6 @@ public class Model {
                 int number = numbers[row][column];
                 boolean isMined = mines[row][column] == 1;
                 cells[row][column] = new ButtonCell(number, isMined);
-                System.out.println("//////////////////////////");
-                System.out.println(row);
-                System.out.println(column);
-                System.out.println(cells[row][column].getStatus());
-                System.out.println("//////////////////////////");
             }
         }
     }
@@ -86,14 +83,14 @@ public class Model {
                 try {
                     minesCounterAround += mines[i][j];
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("row = " + row + "; column = " + column);
+//                    System.err.println("row = " + row + "; column = " + column);
                 }
             }
         }
         return minesCounterAround;
     }
 
-    public ButtonCell getButtonCell (int row, int column) throws ArrayIndexOutOfBoundsException {
+    public ButtonCell getButtonCell(int row, int column) throws ArrayIndexOutOfBoundsException {
         return cells[row][column];
     }
 }
