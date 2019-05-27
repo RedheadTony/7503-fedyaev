@@ -11,7 +11,6 @@ public class Main {
         view.setModel(model);
 
         controller.setModel(model);
-        controller.setView(view);
 
         view.renderBoard();
         model.startGame();

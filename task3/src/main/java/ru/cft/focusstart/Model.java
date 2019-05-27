@@ -4,6 +4,20 @@ import java.util.Random;
 
 public class Model {
 
+    interface OnChangedListener {
+        void onChanged(int row, int column);
+    }
+
+    private OnChangedListener onChangedListener;
+
+    public void setOnChangedListener(OnChangedListener onChangedListener) {
+        this.onChangedListener = onChangedListener;
+    }
+
+    public void syncView(int row, int column) {
+        onChangedListener.onChanged(row, column);
+    }
+
     private static final Settings settings = new Settings();
 
     private ButtonCell[][] cells = new ButtonCell[settings.getSize()][settings.getSize()];
@@ -71,6 +85,7 @@ public class Model {
                 int number = numbers[row][column];
                 boolean isMined = mines[row][column] == 1;
                 cells[row][column] = new ButtonCell(number, isMined);
+                syncView(row, column);
             }
         }
     }
@@ -92,5 +107,53 @@ public class Model {
 
     public ButtonCell getButtonCell(int row, int column) throws ArrayIndexOutOfBoundsException {
         return cells[row][column];
+    }
+
+    public void openCell(int row, int column) {
+        if (getIsWin() || getIsLose()) {
+            return;
+        }
+        ButtonCell cell = getButtonCell(row, column);
+        ButtonCellStates status = cell.getStatus();
+        if (status == ButtonCellStates.OPENED) {
+            return;
+        }
+        cell.open();
+        status = cell.getStatus();
+        if (cell.getIsMined() && status == ButtonCellStates.OPENED) {
+            setIsLose(true);
+        } else {
+            openedCellsIncrement();
+            checkIsWin();
+        }
+        syncView(row, column);
+        if (!cell.getIsMined() && cell.getNumber() == 0) {
+            openCellsAround(row, column);
+        }
+    }
+
+    public void openCellsAround(int row, int column) {
+        for (int i = row - 1; i <= row + 1; i++) {
+            for (int j = column - 1; j <= column + 1; j++) {
+                try {
+                    ButtonCell cell = getButtonCell(i, j);
+                    if (!cell.getIsMined() && !(cell.getStatus() == ButtonCellStates.OPENED)) {
+                        openCell(i, j);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+//                    System.err.println(e);
+                }
+            }
+        }
+
+    }
+
+    public void markCell(int row, int column) {
+        if (getIsWin() || getIsLose()) {
+            return;
+        }
+        ButtonCell cell = getButtonCell(row, column);
+        cell.nextMark();
+        syncView(row, column);
     }
 }

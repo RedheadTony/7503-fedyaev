@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public class View {
+public class View implements Model.OnChangedListener {
     private Model model;
     private Controller controller;
     private static final Settings settings = new Settings();
@@ -97,9 +97,7 @@ public class View {
         }
 
         frame.setLayout(new BorderLayout());
-
         frame.add(jPanel, BorderLayout.CENTER);
-
         frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
@@ -111,16 +109,9 @@ public class View {
 
     public void setModel(Model model) {
         this.model = model;
+        this.model.setOnChangedListener(this);
     }
 
-    public void resetField() {
-        int size = settings.getSize();
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                buttons[row][column].setIcon(closed);
-            }
-        }
-    }
 
     public void syncWithModel(int row, int column) {
         ButtonCell cell = model.getButtonCell(row, column);
@@ -151,5 +142,10 @@ public class View {
             showMessageDialog(null, "You lose!!!");
             return;
         }
+    }
+
+    @Override
+    public void onChanged(int row, int column) {
+        syncWithModel(row, column);
     }
 }
