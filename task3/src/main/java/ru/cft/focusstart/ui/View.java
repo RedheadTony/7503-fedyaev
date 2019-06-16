@@ -1,4 +1,9 @@
-package ru.cft.focusstart;
+package ru.cft.focusstart.ui;
+
+import ru.cft.focusstart.*;
+import ru.cft.focusstart.model.Cell;
+import ru.cft.focusstart.model.CellState;
+import ru.cft.focusstart.model.Model;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,10 +11,10 @@ import java.awt.event.MouseEvent;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public class View implements Model.OnChangedListener {
+public class View implements ChangeListener {
     private Model model;
     private Controller controller;
-    private static final Settings settings = new Settings();
+    private final Settings settings = Settings.getInstance();
 
     private JButton[][] buttons = new JButton[settings.getSize()][settings.getSize()];
 
@@ -114,16 +119,14 @@ public class View implements Model.OnChangedListener {
 
 
     public void syncWithModel(int row, int column) {
-        ButtonCell cell = model.getButtonCell(row, column);
-        boolean isMined = cell.getIsMined();
-        ButtonCellStates status = cell.getStatus();
+        Cell cell = model.getButtonCell(row, column);
+        CellState status = cell.getStatus();
         switch (status) {
+            case EXPLODED:
+                buttons[row][column].setIcon(mine);
+                break;
             case OPENED:
-                if (isMined) {
-                    buttons[row][column].setIcon(mine);
-                    break;
-                }
-                int number = cell.getNumber();
+                int number = cell.getMinesAroundCount();
                 Icon icon = getNumber(number);
                 buttons[row][column].setIcon(icon);
                 break;
@@ -134,18 +137,20 @@ public class View implements Model.OnChangedListener {
                 buttons[row][column].setIcon(flag);
                 break;
         }
-        if (model.getIsWin()) {
-            showMessageDialog(null, "You won!!!");
-            return;
-        }
-        if (model.getIsLose()) {
-            showMessageDialog(null, "You lose!!!");
-            return;
-        }
     }
 
     @Override
     public void onChanged(int row, int column) {
         syncWithModel(row, column);
+    }
+
+    @Override
+    public void onWin() {
+        showMessageDialog(null, "You won!!!");
+    }
+
+    @Override
+    public void onDefeat() {
+        showMessageDialog(null, "You lose!!!");
     }
 }

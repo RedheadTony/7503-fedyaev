@@ -1,17 +1,19 @@
-package ru.cft.focusstart;
+package ru.cft.focusstart.ui;
+
+import ru.cft.focusstart.model.Model;
 
 public class Controller {
     private Model model;
 
-    public void startNewGame() {
+    void startNewGame() {
         model.startGame();
     }
 
-    public void onLeftClick(int row, int column) {
+    void onLeftClick(int row, int column) {
         model.openCell(row, column);
     }
 
-    public void onRightClick(int row, int column) {
+    void onRightClick(int row, int column) {
         model.markCell(row, column);
     }
 
