@@ -1,15 +1,15 @@
-package ru.cft.focusstart;
+package ru.cft.focusstart.part1;
 
 public class Task implements Runnable {
     private int startNumber;
     private int endNumber;
     private double result = 0;
-    private Summable summable;
+    private SumResultListener sumResultListener;
 
-    public Task(int startNumber, int endNumber, Summable summable) {
+    public Task(int startNumber, int endNumber, SumResultListener sumResultListener) {
         this.startNumber = startNumber;
         this.endNumber = endNumber;
-        this.summable = summable;
+        this.sumResultListener = sumResultListener;
     }
 
     public void calcResult() {
@@ -29,6 +29,6 @@ public class Task implements Runnable {
     @Override
     public void run() {
         calcResult();
-        summable.sendResult(result);
+        sumResultListener.changeSumResult(result);
     }
 }

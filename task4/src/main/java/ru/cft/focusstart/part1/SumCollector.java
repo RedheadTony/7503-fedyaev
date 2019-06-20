@@ -1,13 +1,10 @@
-package ru.cft.focusstart;
+package ru.cft.focusstart.part1;
 
-public class App implements Summable {
+public class SumCollector implements SumResultListener {
     private double result = 0;
-    private int NUMBER = 10_000_000;
-    public App() {
-        startCalc();
-    }
+    private static final int NUMBER = 10_000_000;
 
-    private void startCalc() {
+    public void startCalc() {
         int cores = Runtime.getRuntime().availableProcessors();
         int step = (int) NUMBER / cores;
         for (int i = 0; i < cores; i++) {
@@ -26,7 +23,7 @@ public class App implements Summable {
     }
 
     @Override
-    public synchronized void sendResult(double result) {
+    public synchronized void changeSumResult(double result) {
         this.result += result;
         System.out.println(this.result);
     }
