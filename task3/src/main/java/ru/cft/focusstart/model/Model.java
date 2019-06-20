@@ -82,7 +82,7 @@ public class Model {
         }
         Cell cell = getButtonCell(row, column);
         CellState status = cell.getStatus();
-        if (status == CellState.OPENED) {
+        if (status == CellState.OPENED || status == CellState.FLAGGED) {
             return;
         }
         cell.open();
@@ -96,7 +96,7 @@ public class Model {
             checkIsWin();
         }
         changeListener.onChanged(row, column);
-        if (!cell.getIsMined() && cell.getMinesAroundCount() == 0) {
+        if (cell.getMinesAroundCount() == 0) {
             openCellsAround(row, column);
         }
     }
@@ -109,7 +109,7 @@ public class Model {
             for (int j = column - 1; j <= column + 1; j++) {
                 if (j < 0 || j > size - 1) continue;
                 Cell cell = getButtonCell(i, j);
-                if (!cell.getIsMined() && !(cell.getStatus() == CellState.OPENED)) {
+                if (!cell.getIsMined() && !(cell.getStatus() == CellState.OPENED || cell.getStatus() == CellState.FLAGGED)) {
                     openCell(i, j);
                 }
             }
