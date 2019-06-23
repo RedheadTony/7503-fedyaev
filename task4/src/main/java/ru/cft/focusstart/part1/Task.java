@@ -12,7 +12,7 @@ public class Task implements Runnable {
         this.sumResultListener = sumResultListener;
     }
 
-    public void calcResult() {
+    private void calcResult() {
         for (int i = startNumber; i < endNumber; i++) {
             result += function(i);
         }

@@ -12,14 +12,14 @@ public class Application {
     public static void main(String[] args) {
         BlockingQueue<Resource> stock = new ArrayBlockingQueue<Resource>(STOCK_SIZE);
 
-        for(int i = 0; i < PRODUCER_COUNT; i++) {
+        for (int i = 0; i < PRODUCER_COUNT; i++) {
             Producer producer = new Producer(stock, PRODUCER_DELAY_TIME);
             Thread thread = new Thread(producer);
             thread.start();
         }
 
-        for(int i = 0; i < CONSUMER_COUNT; i++) {
-            Consumer consumer = new Consumer(stock,CONSUMER_DELAY_TIME);
+        for (int i = 0; i < CONSUMER_COUNT; i++) {
+            Consumer consumer = new Consumer(stock, CONSUMER_DELAY_TIME);
             Thread thread = new Thread(consumer);
             thread.start();
         }

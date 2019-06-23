@@ -3,6 +3,7 @@ package ru.cft.focusstart.part2;
 import java.util.concurrent.BlockingQueue;
 
 import java.util.logging.Logger;
+
 import static java.util.logging.Logger.getLogger;
 
 class Consumer implements Runnable {
@@ -20,13 +21,15 @@ class Consumer implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        String ConsumerInfo = "Потребитель(id:" + id + "): ";
+        while (!Thread.interrupted()) {
             try {
                 Resource resource = stock.take();
-                log.info("Ресурс забран со склада" + resource.getId());
+                log.info(ConsumerInfo + "Ресурс(id: " + resource.getId() + ") забран со склада.");
                 Thread.sleep(delay);
+                log.info(ConsumerInfo + "Ресурс(id:" + resource.getId() + ") потреблен.");
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.warning(ConsumerInfo + "Error InterruptedException in Consumer");
             }
         }
     }

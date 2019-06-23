@@ -20,15 +20,16 @@ class Producer implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        String ConsumerInfo = "Производитель(id:" + id + "): ";
+        while (!Thread.interrupted()) {
             Resource resource = new Resource();
-            log.info("Ресурс произведен " + resource.getId());
+            log.info(ConsumerInfo + "Ресурс(id:" + resource.getId() + ") произведен.");
             try {
                 stock.put(resource);
-                log.info("Ресурс помещен на склад " + resource.getId());
+                log.info(ConsumerInfo + "Ресурс(id:" + resource.getId() + ") помещен на склад.");
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.warning(ConsumerInfo + "Error InterruptedException in Producer");
             }
         }
     }

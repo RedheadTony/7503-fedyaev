@@ -3,10 +3,12 @@ package ru.cft.focusstart.part1;
 public class SumCollector implements SumResultListener {
     private double result = 0;
     private static final int NUMBER = 10_000_000;
+    private int coresCounter;
 
     public void startCalc() {
         int cores = Runtime.getRuntime().availableProcessors();
-        int step = (int) NUMBER / cores;
+        coresCounter = cores;
+        int step = NUMBER / cores;
         for (int i = 0; i < cores; i++) {
             int startNumber = i * step;
             if (startNumber == 0) {
@@ -25,6 +27,9 @@ public class SumCollector implements SumResultListener {
     @Override
     public synchronized void changeSumResult(double result) {
         this.result += result;
-        System.out.println(this.result);
+        coresCounter--;
+        if (coresCounter == 0) {
+            System.out.println(this.result);
+        }
     }
 }
