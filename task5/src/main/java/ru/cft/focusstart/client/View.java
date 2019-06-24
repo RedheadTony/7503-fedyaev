@@ -41,26 +41,6 @@ public class View extends JFrame implements ChangeListener {
                         javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
                 )
         );
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World\n\n");
-//        jtaTextAreaMessage.append("Goodbye Cruel World2\n\n");
 
 
         jtaTextAreaMessage.setEditable(false);
@@ -86,36 +66,6 @@ public class View extends JFrame implements ChangeListener {
                 )
         );
 
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3\n\n");
-//
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3\n\n");
-//
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3\n\n");
-//
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3\n\n");
-//
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3\n\n");
-//
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3\n\n");
-//
-//        clientsList.append("Client1 gsdf gsdg dfgdfg sdfgdsfg sdfgsdfg sdfgsdfgdf gsfdg\n\n");
-//        clientsList.append("Client2\n\n");
-//        clientsList.append("Client3 sfddfdfsf\n\n");
-
-//        clientsList.setText("");
-
         clientsList.setEditable(false);
         clientsList.setLineWrap(true);
 
@@ -140,7 +90,7 @@ public class View extends JFrame implements ChangeListener {
 
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == 1) {
-                    controller.sendMessage();
+                    controller.sendMessage(input.getText());
                 }
             }
         });
@@ -154,34 +104,34 @@ public class View extends JFrame implements ChangeListener {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                controller.sendMessage();
+                controller.sendMessage(input.getText());
             }
         };
 
         jtfMessage.addActionListener( action );
 
-        DocumentListener listener = new DocumentListener() {
+//        DocumentListener listener = new DocumentListener() {
+//
+//            public void removeUpdate(DocumentEvent event) {
+////                System.out.println("removeUpdate");
+////                System.out.println(jtfMessage.getText());
+//                controller.setMessage(jtfMessage.getText());
+//            }
+//
+//            public void insertUpdate(DocumentEvent event) {
+////                System.out.println("insertUpdate");
+////                System.out.println(jtfMessage.getText());
+//                controller.setMessage(jtfMessage.getText());
+//            }
+//
+//            public void changedUpdate(DocumentEvent event) {
+////                System.out.println("changedUpdate");
+////                System.out.println(jtfMessage.getText());
+//                controller.setMessage(jtfMessage.getText());
+//            }
+//        };
 
-            public void removeUpdate(DocumentEvent event) {
-//                System.out.println("removeUpdate");
-//                System.out.println(jtfMessage.getText());
-                controller.setMessage(jtfMessage.getText());
-            }
-
-            public void insertUpdate(DocumentEvent event) {
-//                System.out.println("insertUpdate");
-//                System.out.println(jtfMessage.getText());
-                controller.setMessage(jtfMessage.getText());
-            }
-
-            public void changedUpdate(DocumentEvent event) {
-//                System.out.println("changedUpdate");
-//                System.out.println(jtfMessage.getText());
-                controller.setMessage(jtfMessage.getText());
-            }
-        };
-
-        jtfMessage.getDocument().addDocumentListener(listener);
+//        jtfMessage.getDocument().addDocumentListener(listener);
 
 //        jtfMessage.addFocusListener(new FocusAdapter() {
 //            @Override
@@ -226,6 +176,7 @@ public class View extends JFrame implements ChangeListener {
     @Override
     public void onChatContentChange() {
         chatContent.setText(model.getChatContent());
+        chatContent.setCaretPosition(chatContent.getDocument().getLength());
     }
 
     @Override

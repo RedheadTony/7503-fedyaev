@@ -8,11 +8,7 @@ public class Controller {
         this.model = model;
     }
 
-    public void setMessage(String message) {
-        model.setMessage(message);
-    }
-
-    public void sendMessage() {
-        model.sendMessage();
+    public void sendMessage(String message) {
+        model.sendMessage(message);
     }
 }
