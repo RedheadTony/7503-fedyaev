@@ -11,4 +11,8 @@ public class Controller {
     public void sendMessage(String message) {
         model.sendMessage(message);
     }
+
+    public void sendNickName() {
+        model.sendNickName();
+    }
 }

@@ -22,6 +22,7 @@ public class View extends JFrame implements ChangeListener {
         this.controller = controller;
         this.model = model;
         model.setChangeListener(this);
+        controller.sendNickName();
     }
 
     public void start() {
@@ -175,6 +176,7 @@ public class View extends JFrame implements ChangeListener {
 
     @Override
     public void onChatContentChange() {
+        System.out.println("onChatContentChange");
         chatContent.setText(model.getChatContent());
         chatContent.setCaretPosition(chatContent.getDocument().getLength());
     }

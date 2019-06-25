@@ -1,5 +1,8 @@
 package ru.cft.focusstart.client;
 
+import com.google.gson.Gson;
+import ru.cft.focusstart.common.Pack;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,7 +27,9 @@ public class Model {
                     if (reader.ready()) {
 //                        System.out.println(reader.readLine());
                         chatContent.append(reader.readLine() + "\n\n");
-                        changeListener.onChatContentChange();
+                        if (changeListener != null) {
+                            changeListener.onChatContentChange();
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -44,6 +49,15 @@ public class Model {
         return chatContent.toString();
     }
 
+    public void sendNickName() {
+        Gson gson = new Gson();
+        Pack pack = new Pack("nick", "my_super_nick");
+        String JSON  = gson.toJson(pack);
+        System.out.println(JSON);
+        writer.println(JSON);
+        writer.flush();
+    }
+
     public void setChangeListener(ChangeListener changeListener) {
         this.changeListener = changeListener;
     }
@@ -53,13 +67,14 @@ public class Model {
             return;
         }
         System.out.println("was changed: " + message);
-//        chatContent.append("my_nickname: ").append(message).append("\n\n");
-//        changeListener.onChatContentChange();
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yy HH:mm");
-        writer.println(dateFormat.format(currentDate).toString() + " nick: " + message);
+        Gson gson = new Gson();
+        Pack pack = new Pack("message", dateFormat.format(currentDate).toString() + " nick: " + message);
+        String JSON  = gson.toJson(pack);
+        System.out.println(JSON);
+        writer.println(JSON);
         writer.flush();
         changeListener.resetInput();
-        message = "";
     }
 }
