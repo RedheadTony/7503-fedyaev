@@ -16,13 +16,13 @@ public class View extends JFrame implements ChangeListener {
     private JTextArea chatContent;
     private JTextField input;
     private Model model;
+    private JTextArea clientsList;
 
     private final Controller controller;
     public View(Controller controller, Model model) {
         this.controller = controller;
         this.model = model;
         model.setChangeListener(this);
-        controller.sendNickName();
     }
 
     public void start() {
@@ -51,6 +51,7 @@ public class View extends JFrame implements ChangeListener {
         add(jsp, BorderLayout.CENTER);
 
         JTextArea clientsList = new JTextArea();
+        this.clientsList = clientsList;
 
 //        add(clientsList, "West");
 //        clientsList.setPreferredSize(new Dimension(250, 400));
@@ -111,67 +112,8 @@ public class View extends JFrame implements ChangeListener {
 
         jtfMessage.addActionListener( action );
 
-//        DocumentListener listener = new DocumentListener() {
-//
-//            public void removeUpdate(DocumentEvent event) {
-////                System.out.println("removeUpdate");
-////                System.out.println(jtfMessage.getText());
-//                controller.setMessage(jtfMessage.getText());
-//            }
-//
-//            public void insertUpdate(DocumentEvent event) {
-////                System.out.println("insertUpdate");
-////                System.out.println(jtfMessage.getText());
-//                controller.setMessage(jtfMessage.getText());
-//            }
-//
-//            public void changedUpdate(DocumentEvent event) {
-////                System.out.println("changedUpdate");
-////                System.out.println(jtfMessage.getText());
-//                controller.setMessage(jtfMessage.getText());
-//            }
-//        };
-
-//        jtfMessage.getDocument().addDocumentListener(listener);
-
-//        jtfMessage.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//                String text = jtfMessage.getText();
-//                if(text.equals("Введите ваше сообщение: ")) {
-//                    jtfMessage.setText("");
-//                }
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                jtfMessage.setText("Введите ваше сообщение: ");
-//            }
-//        });
-
         bottomPanel.add(jtfMessage, BorderLayout.CENTER);
-//        JTextField jtfName = new JTextField("Введите ваше имя: ");
-//        bottomPanel.add(jtfName, BorderLayout.WEST);
-
-//        Scanner userInputReader = new Scanner(jtfMessage.getText());
-//        new Thread(() -> {
-//            while (true) {
-//                String userInput = userInputReader.nextLine();
-////                if (userInput()) {
-////
-////                }
-//                if ("\\q".equals(userInput)) {
-////                        messageListenerThread.interrupt();
-////                        socket.close();
-//                    break;
-//                }
-//                String message = userInput;
-//                System.out.println(message);
-////                    writer.println(message);
-////                    writer.flush();
-//            }
-//        }).start();
-
+        controller.sendNickName();
     }
 
     @Override
@@ -179,6 +121,11 @@ public class View extends JFrame implements ChangeListener {
         System.out.println("onChatContentChange");
         chatContent.setText(model.getChatContent());
         chatContent.setCaretPosition(chatContent.getDocument().getLength());
+    }
+
+    @Override
+    public void onClientListChange() {
+        clientsList.setText(model.getNicks());
     }
 
     @Override

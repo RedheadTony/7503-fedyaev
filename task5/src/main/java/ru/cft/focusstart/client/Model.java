@@ -14,6 +14,7 @@ import java.util.Date;
 public class Model {
     private StringBuffer chatContent = new StringBuffer();
     private ChangeListener changeListener;
+    private String nicks = "";
 
     Socket socket = new Socket("localhost", 1111);
     PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -26,7 +27,15 @@ public class Model {
                 try {
                     if (reader.ready()) {
 //                        System.out.println(reader.readLine());
-                        chatContent.append(reader.readLine() + "\n\n");
+                        Gson gson = new Gson();
+                        String JSON = reader.readLine();
+                        Pack pack = gson.fromJson(JSON, Pack.class);
+                        if(pack.getType().equals("message")) {
+                            chatContent.append(pack.getContent()).append("\n\n");
+                        } else if(pack.getType().equals("nicks")) {
+                            nicks = pack.getContent();
+                            changeListener.onClientListChange();
+                        }
                         if (changeListener != null) {
                             changeListener.onChatContentChange();
                         }
@@ -76,5 +85,9 @@ public class Model {
         writer.println(JSON);
         writer.flush();
         changeListener.resetInput();
+    }
+
+    public String getNicks() {
+        return nicks;
     }
 }

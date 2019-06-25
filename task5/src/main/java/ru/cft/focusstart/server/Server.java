@@ -12,9 +12,10 @@ import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
-    private List<PrintWriter> writers = new CopyOnWriteArrayList<>();
-    private List<Socket> clients = new CopyOnWriteArrayList<>();
-    private List<BufferedReader> readers = new CopyOnWriteArrayList<>();
+//    private List<PrintWriter> writers = new CopyOnWriteArrayList<>();
+//    private List<Socket> clients = new CopyOnWriteArrayList<>();
+//    private List<BufferedReader> readers = new CopyOnWriteArrayList<>();
+    private  List<Connect> connects = new ArrayList<>();
     private ServerSocket serverSocket;
 
     public Server() throws IOException {
@@ -37,10 +38,22 @@ public class Server {
 
     private void sendData(String data) {
         System.out.println("send data " + data);
-        for (PrintWriter writer : writers) {
+        for (Connect connect : connects) {
+            PrintWriter writer = connect.getWriter();
             writer.println(data);
             writer.flush();
         }
+    }
+
+    private void sendNicknames() {
+        StringBuilder nickNames = new StringBuilder();
+        for (Connect connect : connects) {
+            nickNames.append(connect.getNickName()).append("\n\n");
+        }
+        Gson gson = new Gson();
+        Pack pack = new Pack("nicks", nickNames.toString());
+        String JSON  = gson.toJson(pack);
+        sendData(JSON);
     }
 
     private void createClientListener() {
@@ -52,9 +65,12 @@ public class Server {
                     System.out.println("listen client");
                     Socket clientSocket = serverSocket.accept();
                     System.out.println(clientSocket.getInetAddress().getHostName());
-                    clients.add(clientSocket);
-                    readers.add(new BufferedReader(new InputStreamReader(clientSocket.getInputStream())));
-                    writers.add(new PrintWriter(clientSocket.getOutputStream()));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
+                    connects.add(new Connect(clientSocket, reader, writer));
+//                    clients.add(clientSocket);
+//                    readers.add(new BufferedReader(new InputStreamReader(clientSocket.getInputStream())));
+//                    writers.add(new PrintWriter(clientSocket.getOutputStream()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -71,8 +87,8 @@ public class Server {
             try {
                 clientListenerThread.interrupt();
                 serverSocket.close();
-                for (Socket socket : clients) {
-                    socket.close();
+                for (Connect connect : connects) {
+                    connect.getClientSocket().close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -87,8 +103,9 @@ public class Server {
             while (!interrupted) {
                 try {
                     String message = null;
-                    for (BufferedReader reader : readers) {
-                        if (reader.ready()) {
+                    for (Connect connect : connects) {
+                        BufferedReader reader = connect.getReader();
+                        if (connect.getReader().ready()) {
                             String JSON = reader.readLine();
                             Pack pack = gson.fromJson(JSON, Pack.class);
                             System.out.println("get data");
@@ -96,12 +113,20 @@ public class Server {
                             System.out.println(pack.getType());
                             if(pack.getType().equals("message")) {
                                 message = pack.getContent();
-                                System.out.println("message");
-                                sendData(message);
+//                                System.out.println("message");
+//                                pack = new Pack(message);
+//                                String JSON  = gson.toJson(pack);
+                                sendData(JSON);
                             } else if (pack.getType().equals("nick")) {
                                 System.out.println("nick");
-                                System.out.println(pack.getContent());
-                                sendData(pack.getContent() + " join to chat");
+                                String nickName = pack.getContent();
+                                System.out.println(nickName);
+                                connect.setNickName(nickName);
+                                message = nickName + " join to chat";
+                                pack = new Pack("message", message);
+                                JSON  = gson.toJson(pack);
+                                sendData(JSON);
+                                sendNicknames();
                             }
                         }
                     }
@@ -129,8 +154,8 @@ public class Server {
             try {
                 messageListenerThread.interrupt();
                 serverSocket.close();
-                for (Socket socket : clients) {
-                    socket.close();
+                for (Connect connect : connects) {
+                    connect.getClientSocket().close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
