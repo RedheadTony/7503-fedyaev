@@ -27,6 +27,17 @@ public class Server {
         createMessageListener();
         createClientListener();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                serverSocket.close();
+                for (Connect connect : connects) {
+                    connect.getClientSocket().close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -93,17 +104,7 @@ public class Server {
             }
         });
         clientListenerThread.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                clientListenerThread.interrupt();
-                serverSocket.close();
-                for (Connect connect : connects) {
-                    connect.getClientSocket().close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(clientListenerThread::interrupt));
     }
 
     private void createMessageListener() {
@@ -141,17 +142,7 @@ public class Server {
             }
         });
         messageListenerThread.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                messageListenerThread.interrupt();
-                serverSocket.close();
-                for (Connect connect : connects) {
-                    connect.getClientSocket().close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(messageListenerThread::interrupt));
     }
 
     private void saveNewNickName(String nickName, Connect currentConnect) {
