@@ -1,22 +1,20 @@
-package ru.cft.focusstart.client;
+package ru.cft.focusstart.client.ui;
+
+import ru.cft.focusstart.client.ChangeListener;
+import ru.cft.focusstart.client.model.Model;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.util.Scanner;
 
-public class View extends JFrame implements ChangeListener {
+public class ChatWindow extends JFrame implements ChangeListener {
     private JTextArea chatContent;
     private JTextField input;
     private Model model;
     private JTextArea clientsList;
 
     private final Controller controller;
-    public View(Controller controller, Model model) {
+    public ChatWindow(Controller controller, Model model) {
         this.controller = controller;
         this.model = model;
         model.setChangeListener(this);

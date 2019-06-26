@@ -1,6 +1,8 @@
-package ru.cft.focusstart.client;
+package ru.cft.focusstart.client.model;
 
 import com.google.gson.Gson;
+import ru.cft.focusstart.client.ChangeListener;
+import ru.cft.focusstart.client.SetNickNameListener;
 import ru.cft.focusstart.common.Pack;
 import ru.cft.focusstart.common.PackTypes;
 
@@ -30,14 +32,14 @@ public class Model {
         this.nickNameListener = nickNameListener;
     }
 
-    public void connect(String host, String nick) throws IOException {
+    public void connect(String host, Integer port, String nick) throws IOException {
         if (messageListenerThread != null) {
             messageListenerThread.stop();
         }
         if (socket != null) {
             disconnect();
         }
-        socket = new Socket(host, 1111);
+        socket = new Socket(host, port);
         writer = new PrintWriter(socket.getOutputStream());
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         nickName = nick; //.replaceAll("\\n|\\r\\n", "")

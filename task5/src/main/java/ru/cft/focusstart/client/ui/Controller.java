@@ -1,9 +1,11 @@
-package ru.cft.focusstart.client;
+package ru.cft.focusstart.client.ui;
+
+import ru.cft.focusstart.client.model.Model;
 
 public class Controller {
     private final Model model;
 
-    Controller(Model model) {
+    public Controller(Model model) {
         this.model = model;
     }
 

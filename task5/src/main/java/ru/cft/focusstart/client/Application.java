@@ -1,5 +1,10 @@
 package ru.cft.focusstart.client;
 
+import ru.cft.focusstart.client.model.Model;
+import ru.cft.focusstart.client.ui.ChatWindow;
+import ru.cft.focusstart.client.ui.ConnectForm;
+import ru.cft.focusstart.client.ui.Controller;
+
 import java.io.IOException;
 
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -22,19 +27,19 @@ public class Application implements SubmitListener, SetNickNameListener {
     }
 
     private void createChatWindow() {
-        View view = new View(controller, model);
-        view.start();
-        view.setVisible(true);
+        ChatWindow chatWindow = new ChatWindow(controller, model);
+        chatWindow.start();
+        chatWindow.setVisible(true);
     }
 
     @Override
-    public void onSubmit(String host, String nick) {
+    public void onSubmit(String host, Integer port, String nick) {
         try {
-            model.connect(host, nick);
+            model.connect(host, port, nick);
             model.sendNickName();
         } catch (IOException e) {
             e.printStackTrace();
-            onFail("Не удалось подключиться к хосту " + host);
+            onFail("Не удалось подключиться к хосту " + host + ":" + port);
         }
     }
 
