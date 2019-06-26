@@ -11,7 +11,7 @@ public class Connect {
     private PrintWriter writer;
     private Socket clientSocket;
     private BufferedReader reader;
-    private String nickName;
+    private String nickName = "";
 
     public Connect(Socket clientSocket, BufferedReader reader, PrintWriter writer) {
         this.clientSocket = clientSocket;

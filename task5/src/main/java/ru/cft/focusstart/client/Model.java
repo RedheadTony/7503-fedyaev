@@ -40,6 +40,12 @@ public class Model {
                         } else if(pack.getType().equals("nicks")) {
                             nicks = pack.getContent();
                             changeListener.onClientListChange();
+                        } else if(pack.getType().equals("saveNickNameResponse")) {
+                            if(pack.getContent().equals("success")) {
+                                System.out.println("Client saveNickNameResponse success");
+                            } else {
+                                System.out.println("Client saveNickNameResponse error");
+                            }
                         }
                         if (changeListener != null) {
                             changeListener.onChatContentChange();

@@ -113,20 +113,18 @@ public class Server {
                             System.out.println(pack.getType());
                             if(pack.getType().equals("message")) {
                                 message = pack.getContent();
-//                                System.out.println("message");
-//                                pack = new Pack(message);
-//                                String JSON  = gson.toJson(pack);
                                 sendData(JSON);
                             } else if (pack.getType().equals("nick")) {
                                 System.out.println("nick");
                                 String nickName = pack.getContent();
                                 System.out.println(nickName);
-                                connect.setNickName(nickName);
-                                message = nickName + " join to chat";
-                                pack = new Pack("message", message);
-                                JSON  = gson.toJson(pack);
-                                sendData(JSON);
-                                sendNicknames();
+                                saveNewNickName(nickName, connect);
+//                                connect.setNickName(nickName);
+//                                message = nickName + " join to chat";
+//                                pack = new Pack("message", message);
+//                                JSON  = gson.toJson(pack);
+//                                sendData(JSON);
+//                                sendNicknames();
                             }
                         }
                     }
@@ -161,5 +159,42 @@ public class Server {
                 e.printStackTrace();
             }
         }));
+    }
+
+    private boolean saveNewNickName(String nickName, Connect currentConnect) {
+        boolean nickNameExist = false;
+        for( Connect connect : connects ) {
+            if(connect.getNickName().equals(nickName)) {
+                nickNameExist = true;
+                break;
+            }
+        }
+        Gson gson = new Gson();
+        Pack pack;
+        String JSON;
+        if(!nickNameExist) {
+            currentConnect.setNickName(nickName);
+            System.out.println("saved nickname");
+            pack = new Pack("saveNickNameResponse", "success");
+            JSON  = gson.toJson(pack);
+            PrintWriter writer = currentConnect.getWriter();
+            writer.println(JSON);
+            writer.flush();
+
+            String message = nickName + " join to chat";
+            pack = new Pack("message", message);
+            JSON  = gson.toJson(pack);
+            sendData(JSON);
+            sendNicknames();
+            return true;
+        } else {
+            System.out.println("no saved nickname");
+            pack = new Pack("saveNickNameResponse", "error");
+            JSON  = gson.toJson(pack);
+            PrintWriter writer = currentConnect.getWriter();
+            writer.println(JSON);
+            writer.flush();
+            return false;
+        }
     }
 }
