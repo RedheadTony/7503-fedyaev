@@ -6,19 +6,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class Application implements SubmitListener, SetNickNameListener {
     private Model model = new Model(this);
-    Controller controller = new Controller(model);
+    private Controller controller = new Controller(model);
     private ConnectForm form = new ConnectForm(this, controller);
     public static void main(String[] args) {
-//        Model model = null;
-//        try {
-//            model = new Model();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Controller controller = new Controller(model);
-//        View view = new View(controller, model);
-//        view.start();
-//        view.setVisible(true);
           Application application = new Application();
     }
 
@@ -46,10 +36,6 @@ public class Application implements SubmitListener, SetNickNameListener {
             e.printStackTrace();
             onFail("Не удалось подключиться к хосту " + host);
         }
-//        System.out.println(host);
-//        System.out.println(nick);
-//        createChatWindow(host, nick);
-//        form.setVisible(false);
     }
 
     @Override
@@ -65,6 +51,6 @@ public class Application implements SubmitListener, SetNickNameListener {
 
     @Override
     public void onError() {
-        onFail("Выбранный ник уже занят");
+        onFail("Ник " + model.getNickName() + " уже занят");
     }
 }

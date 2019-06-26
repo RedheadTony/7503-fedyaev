@@ -7,31 +7,30 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 public class ConnectForm extends JFrame implements ActionListener {
-    JPanel panel;
-    JLabel user_label, password_label, message;
-    JTextField host;
-    JTextField nick;
-    JButton submit, cancel;
-    SubmitListener submitListener;
-    Controller controller;
-    public ConnectForm(SubmitListener submitListener, Controller controller) {
+    private JPanel panel;
+    private JLabel user_label, password_label, message;
+    private JTextField host;
+    private JTextField nick;
+    private JButton submit, cancel;
+    private SubmitListener submitListener;
+    private Controller controller;
+
+    ConnectForm(SubmitListener submitListener, Controller controller) {
         this.submitListener = submitListener;
         this.controller = controller;
     }
 
-    public void createForm() {
+    void createForm() {
         user_label = new JLabel();
         user_label.setText("Host:");
         host = new JTextField();
 
-        // Password
-
         password_label = new JLabel();
         password_label.setText("Nick name:");
         nick = new JTextField();
-
-        // Submit
 
         submit = new JButton("Join to chat");
 
@@ -48,7 +47,6 @@ public class ConnectForm extends JFrame implements ActionListener {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Adding the listeners to components..
         submit.addActionListener(this);
         add(panel, BorderLayout.CENTER);
         setTitle("Please Login Here !");
@@ -58,7 +56,6 @@ public class ConnectForm extends JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e)
             {
-                System.out.println("Closed");
                 controller.disconnect();
                 e.getWindow().dispose();
             }
@@ -68,7 +65,14 @@ public class ConnectForm extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        System.out.println("gg");
+        if(host.getText().equals("")) {
+            showMessageDialog(null, "Поле host обязательно для заполнения");
+            return;
+        }
+        if(nick.getText().equals("")) {
+            showMessageDialog(null, "Поле nick  обязательно для заполнения");
+            return;
+        }
         submitListener.onSubmit(host.getText(), nick.getText());
     }
 }

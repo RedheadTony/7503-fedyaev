@@ -24,7 +24,7 @@ public class View extends JFrame implements ChangeListener {
 
     public void start() {
         setBounds(200, 100, 900, 500);
-        setTitle("Client");
+        setTitle("My nickname is " + model.getNickName());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JTextArea jtaTextAreaMessage = new JTextArea();
         chatContent = jtaTextAreaMessage;
@@ -50,9 +50,6 @@ public class View extends JFrame implements ChangeListener {
         JTextArea clientsList = new JTextArea();
         this.clientsList = clientsList;
 
-//        add(clientsList, "West");
-//        clientsList.setPreferredSize(new Dimension(250, 400));
-
         clientsList.setBorder(
                 javax.swing.BorderFactory.createCompoundBorder(
                         javax.swing.BorderFactory.createTitledBorder(
@@ -70,16 +67,10 @@ public class View extends JFrame implements ChangeListener {
 
 
         add(clientsList, "West");
-        System.out.println(clientsList.getHeight());
         clientsList.setPreferredSize(new Dimension(250, clientsList.getHeight()));
         JScrollPane jsp2 = new JScrollPane(clientsList);
         add(jsp2, BorderLayout.LINE_END);
 
-//        JScrollBar vertical = jsp.getVerticalScrollBar();
-//        vertical.setValue( jtaTextAreaMessage.getDocument().getLength() );
-
-//        JLabel jlNumberOfClients = new JLabel("Количество клиентов в чате: ");
-//        add(jlNumberOfClients, BorderLayout.NORTH);
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         add(bottomPanel, BorderLayout.SOUTH);
@@ -116,16 +107,16 @@ public class View extends JFrame implements ChangeListener {
             @Override
             public void windowClosing(WindowEvent e)
             {
-                System.out.println("Closed");
                 controller.disconnect();
                 e.getWindow().dispose();
             }
         });
+        onChatContentChange();
+        onClientListChange();
     }
 
     @Override
     public void onChatContentChange() {
-        System.out.println("onChatContentChange");
         chatContent.setText(model.getChatContent());
         chatContent.setCaretPosition(chatContent.getDocument().getLength());
     }
