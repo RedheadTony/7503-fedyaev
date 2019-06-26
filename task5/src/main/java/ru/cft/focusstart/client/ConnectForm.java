@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ConnectForm extends JFrame implements ActionListener {
     JPanel panel;
@@ -12,8 +14,10 @@ public class ConnectForm extends JFrame implements ActionListener {
     JTextField nick;
     JButton submit, cancel;
     SubmitListener submitListener;
-    public ConnectForm(SubmitListener submitListener) {
+    Controller controller;
+    public ConnectForm(SubmitListener submitListener, Controller controller) {
         this.submitListener = submitListener;
+        this.controller = controller;
     }
 
     public void createForm() {
@@ -49,6 +53,16 @@ public class ConnectForm extends JFrame implements ActionListener {
         add(panel, BorderLayout.CENTER);
         setTitle("Please Login Here !");
         setSize(300, 100);
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                System.out.println("Closed");
+                controller.disconnect();
+                e.getWindow().dispose();
+            }
+        });
         setVisible(true);
     }
 

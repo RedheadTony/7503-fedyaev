@@ -20,13 +20,38 @@ public class Model {
     Socket socket;// = new Socket("localhost", 1111);
     PrintWriter writer;// = new PrintWriter(socket.getOutputStream());
     BufferedReader reader;// = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    Thread messageListenerThread;
+    SetNickNameListener nickNameListener;
 
-    public Model(String host, String nick) throws IOException {
+    public Model(SetNickNameListener nickNameListener) {
+        this.nickNameListener = nickNameListener;
+    }
+
+    public void connect(String host, String nick) throws IOException {
+        if (messageListenerThread != null) {
+            messageListenerThread.stop();
+        }
+        if (socket != null) {
+            disconnect();
+        }
         socket = new Socket(host, 1111);
         writer = new PrintWriter(socket.getOutputStream());
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        nickName = nick;
-        Thread messageListenerThread = new Thread(() -> {
+        nickName = nick.replaceAll("\\n|\\r\\n", "");
+        startMessageListener();
+    }
+
+    public void disconnect() {
+        Gson gson = new Gson();
+        Pack pack = new Pack("close", "");
+        String JSON = gson.toJson(pack);
+        System.out.println("Client" + JSON);
+        writer.println(JSON);
+        writer.flush();
+    }
+
+    private void startMessageListener() {
+        messageListenerThread = new Thread(() -> {
             boolean interrupted = false;
             while (!interrupted) {
                 try {
@@ -35,16 +60,20 @@ public class Model {
                         Gson gson = new Gson();
                         String JSON = reader.readLine();
                         Pack pack = gson.fromJson(JSON, Pack.class);
-                        if(pack.getType().equals("message")) {
+                        if (pack.getType().equals("message")) {
                             chatContent.append(pack.getContent()).append("\n\n");
-                        } else if(pack.getType().equals("nicks")) {
+                        } else if (pack.getType().equals("nicks")) {
                             nicks = pack.getContent();
-                            changeListener.onClientListChange();
-                        } else if(pack.getType().equals("saveNickNameResponse")) {
-                            if(pack.getContent().equals("success")) {
+                            if(changeListener != null) {
+                                changeListener.onClientListChange();
+                            }
+                        } else if (pack.getType().equals("saveNickNameResponse")) {
+                            if (pack.getContent().equals("success")) {
                                 System.out.println("Client saveNickNameResponse success");
+                                nickNameListener.onSuccess();
                             } else {
                                 System.out.println("Client saveNickNameResponse error");
+                                nickNameListener.onError();
                             }
                         }
                         if (changeListener != null) {
@@ -72,7 +101,7 @@ public class Model {
     public void sendNickName() {
         Gson gson = new Gson();
         Pack pack = new Pack("nick", nickName);
-        String JSON  = gson.toJson(pack);
+        String JSON = gson.toJson(pack);
         System.out.println(JSON);
         writer.println(JSON);
         writer.flush();
@@ -83,7 +112,7 @@ public class Model {
     }
 
     public void sendMessage(String message) {
-        if(message.equals("")) {
+        if (message.equals("")) {
             return;
         }
         System.out.println("was changed: " + message);
@@ -91,7 +120,7 @@ public class Model {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yy HH:mm");
         Gson gson = new Gson();
         Pack pack = new Pack("message", dateFormat.format(currentDate).toString() + " " + nickName + ": " + message);
-        String JSON  = gson.toJson(pack);
+        String JSON = gson.toJson(pack);
         System.out.println(JSON);
         writer.println(JSON);
         writer.flush();

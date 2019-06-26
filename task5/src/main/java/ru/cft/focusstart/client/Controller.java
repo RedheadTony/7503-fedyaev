@@ -12,6 +12,10 @@ public class Controller {
         model.sendMessage(message);
     }
 
+    public void disconnect() {
+        model.disconnect();
+    }
+
     public void sendNickName() {
         model.sendNickName();
     }

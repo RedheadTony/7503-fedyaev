@@ -15,7 +15,7 @@ public class Server {
 //    private List<PrintWriter> writers = new CopyOnWriteArrayList<>();
 //    private List<Socket> clients = new CopyOnWriteArrayList<>();
 //    private List<BufferedReader> readers = new CopyOnWriteArrayList<>();
-    private  List<Connect> connects = new ArrayList<>();
+    private  List<Connect> connects = new CopyOnWriteArrayList<>();
     private ServerSocket serverSocket;
 
     public Server() throws IOException {
@@ -45,10 +45,28 @@ public class Server {
         }
     }
 
+    private void removeConnection(Connect connect) {
+        System.out.println("remove " + connect.getNickName());
+        Pack pack = new Pack("message", connect.getNickName() + " left the chat");
+        try {
+            connect.getClientSocket().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        connects.remove(connect);
+        Gson gson = new Gson();
+        String JSON  = gson.toJson(pack);
+        sendData(JSON);
+        sendNicknames();
+    }
+
     private void sendNicknames() {
         StringBuilder nickNames = new StringBuilder();
         for (Connect connect : connects) {
-            nickNames.append(connect.getNickName()).append("\n\n");
+            System.out.println("nick " + connect.getNickName());
+            if(!connect.getNickName().equals("")) {
+                nickNames.append(connect.getNickName()).append("\n");
+            }
         }
         Gson gson = new Gson();
         Pack pack = new Pack("nicks", nickNames.toString());
@@ -125,6 +143,8 @@ public class Server {
 //                                JSON  = gson.toJson(pack);
 //                                sendData(JSON);
 //                                sendNicknames();
+                            } else if(pack.getType().equals("close")) {
+                                removeConnection(connect);
                             }
                         }
                     }

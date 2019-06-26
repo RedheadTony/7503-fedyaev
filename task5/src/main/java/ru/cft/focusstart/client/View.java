@@ -5,10 +5,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -113,7 +110,17 @@ public class View extends JFrame implements ChangeListener {
         jtfMessage.addActionListener( action );
 
         bottomPanel.add(jtfMessage, BorderLayout.CENTER);
-        controller.sendNickName();
+
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                System.out.println("Closed");
+                controller.disconnect();
+                e.getWindow().dispose();
+            }
+        });
     }
 
     @Override

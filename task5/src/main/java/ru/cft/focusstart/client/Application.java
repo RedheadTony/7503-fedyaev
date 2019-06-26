@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public class Application implements SubmitListener {
-    private ConnectForm form = new ConnectForm(this);
+public class Application implements SubmitListener, SetNickNameListener {
+    private Model model = new Model(this);
+    Controller controller = new Controller(model);
+    private ConnectForm form = new ConnectForm(this, controller);
     public static void main(String[] args) {
 //        Model model = null;
 //        try {
@@ -29,32 +31,40 @@ public class Application implements SubmitListener {
         form.setVisible(true);
     }
 
-    private void createChatWindow(String host, String nick) throws IOException {
-        Model model = new Model(host, nick);
-        Controller controller = new Controller(model);
+    private void createChatWindow() {
         View view = new View(controller, model);
         view.start();
         view.setVisible(true);
     }
 
     @Override
-    public void onSubmit(String host, String name) {
-        System.out.println(host);
-        System.out.println(name);
+    public void onSubmit(String host, String nick) {
         try {
-            createChatWindow(host, name);
-            form.setVisible(false);
-        } catch (java.net.ConnectException e) {
-            System.out.println("error connection");
+            model.connect(host, nick);
+            model.sendNickName();
         } catch (IOException e) {
-            System.out.println("error");
             e.printStackTrace();
-            onFail("Something went wrong");
+            onFail("Не удалось подключиться к хосту " + host);
         }
+//        System.out.println(host);
+//        System.out.println(nick);
+//        createChatWindow(host, nick);
+//        form.setVisible(false);
     }
 
     @Override
     public void onFail(String errorMessage) {
         showMessageDialog(null, errorMessage);
+    }
+
+    @Override
+    public void onSuccess() {
+        createChatWindow();
+        form.setVisible(false);
+    }
+
+    @Override
+    public void onError() {
+        onFail("Выбранный ник уже занят");
     }
 }
