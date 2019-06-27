@@ -2,12 +2,11 @@ package ru.cft.focusstart.server;
 
 import com.google.gson.Gson;
 import ru.cft.focusstart.common.Pack;
-import ru.cft.focusstart.common.PackTypes;
+import ru.cft.focusstart.common.PackType;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,13 +14,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Server {
     private List<Connect> connects = new CopyOnWriteArrayList<>();
     private ServerSocket serverSocket;
+    private final Gson gson = new Gson();
 
     public Server() throws IOException {
         Properties properties = new Properties();
         try (InputStream propertiesStream = Server.class.getClassLoader().getResourceAsStream("server.properties")) {
             properties.load(propertiesStream);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         serverSocket = new ServerSocket(Integer.valueOf(properties.getProperty("server.port")));
         createMessageListener();
@@ -40,8 +38,12 @@ public class Server {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        Server server = new Server();
+    public static void main(String[] args) {
+        try {
+            Server server = new Server();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendData(String data) {
@@ -61,8 +63,7 @@ public class Server {
         }
         connects.remove(connect);
         if (!nickName.equals("")) {
-            Pack pack = new Pack(PackTypes.MESSAGE, nickName + " left the chat");
-            Gson gson = new Gson();
+            Pack pack = new Pack(PackType.MESSAGE, nickName + " left the chat");
             String JSON = gson.toJson(pack);
             sendData(JSON);
             sendNicknames();
@@ -76,17 +77,14 @@ public class Server {
                 nickNames.append(connect.getNickName()).append("\n");
             }
         }
-        Gson gson = new Gson();
-        Pack pack = new Pack(PackTypes.NICKS_LIST, nickNames.toString());
+        Pack pack = new Pack(PackType.NICKS_LIST, nickNames.toString());
         String JSON = gson.toJson(pack);
         sendData(JSON);
     }
 
     private void createClientListener() {
         Thread clientListenerThread = new Thread(() -> {
-            boolean interrupted = false;
-            Gson gson = new Gson();
-            while (!interrupted) {
+            while (!Thread.interrupted()) {
                 try {
                     Socket clientSocket = serverSocket.accept();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -95,22 +93,14 @@ public class Server {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    interrupted = true;
-                }
             }
         });
         clientListenerThread.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(clientListenerThread::interrupt));
     }
 
     private void createMessageListener() {
         Thread messageListenerThread = new Thread(() -> {
             boolean interrupted = false;
-            Gson gson = new Gson();
             while (!interrupted) {
                 try {
                     for (Connect connect : connects) {
@@ -142,7 +132,6 @@ public class Server {
             }
         });
         messageListenerThread.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(messageListenerThread::interrupt));
     }
 
     private void saveNewNickName(String nickName, Connect currentConnect) {
@@ -153,24 +142,23 @@ public class Server {
                 break;
             }
         }
-        Gson gson = new Gson();
         Pack pack;
         String JSON;
         if (!nickNameExist) {
             currentConnect.setNickName(nickName);
-            pack = new Pack(PackTypes.NICK_SAVED_SUCCESS, "");
+            pack = new Pack(PackType.NICK_SAVED_SUCCESS, "");
             JSON = gson.toJson(pack);
             PrintWriter writer = currentConnect.getWriter();
             writer.println(JSON);
             writer.flush();
 
             String message = nickName + " join to chat";
-            pack = new Pack(PackTypes.MESSAGE, message);
+            pack = new Pack(PackType.MESSAGE, message);
             JSON = gson.toJson(pack);
             sendData(JSON);
             sendNicknames();
         } else {
-            pack = new Pack(PackTypes.NICK_SAVED_ERROR, "");
+            pack = new Pack(PackType.NICK_SAVED_ERROR, "");
             JSON = gson.toJson(pack);
             PrintWriter writer = currentConnect.getWriter();
             writer.println(JSON);

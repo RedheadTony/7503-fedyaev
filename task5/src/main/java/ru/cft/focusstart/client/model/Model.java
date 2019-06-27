@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import ru.cft.focusstart.client.ChangeListener;
 import ru.cft.focusstart.client.SetNickNameListener;
 import ru.cft.focusstart.common.Pack;
-import ru.cft.focusstart.common.PackTypes;
+import ru.cft.focusstart.common.PackType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static ru.cft.focusstart.common.PackTypes.MESSAGE;
+import static ru.cft.focusstart.common.PackType.MESSAGE;
 
 public class Model {
     private StringBuffer chatContent = new StringBuffer();
@@ -28,13 +28,15 @@ public class Model {
     private Thread messageListenerThread;
     private SetNickNameListener nickNameListener;
 
+    private final Gson gson = new Gson();
+
     public Model(SetNickNameListener nickNameListener) {
         this.nickNameListener = nickNameListener;
     }
 
     public void connect(String host, Integer port, String nick) throws IOException {
         if (messageListenerThread != null) {
-            messageListenerThread.stop();
+            messageListenerThread.interrupt();
         }
         if (socket != null) {
             disconnect();
@@ -48,11 +50,15 @@ public class Model {
 
     public void disconnect() {
         if (writer != null) {
-            Gson gson = new Gson();
-            Pack pack = new Pack(PackTypes.CLOSE_CONNECTION, "");
+            Pack pack = new Pack(PackType.CLOSE_CONNECTION, "");
             String JSON = gson.toJson(pack);
             writer.println(JSON);
             writer.flush();
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -62,7 +68,6 @@ public class Model {
             while (!interrupted) {
                 try {
                     if (reader.ready()) {
-                        Gson gson = new Gson();
                         String JSON = reader.readLine();
                         Pack pack = gson.fromJson(JSON, Pack.class);
                         switch (pack.getType()) {
@@ -105,8 +110,7 @@ public class Model {
     }
 
     public void sendNickName() {
-        Gson gson = new Gson();
-        Pack pack = new Pack(PackTypes.NICK, nickName);
+        Pack pack = new Pack(PackType.NICK, nickName);
         String JSON = gson.toJson(pack);
         writer.println(JSON);
         writer.flush();
@@ -122,9 +126,8 @@ public class Model {
         }
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yy HH:mm");
-        Gson gson = new Gson();
         Pack pack = new Pack(MESSAGE,
-                dateFormat.format(currentDate).toString() +
+                dateFormat.format(currentDate) +
                         " " + nickName + ": " + message);
         String JSON = gson.toJson(pack);
         writer.println(JSON);

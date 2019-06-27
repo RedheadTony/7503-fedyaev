@@ -3,16 +3,16 @@ package ru.cft.focusstart.common;
 import java.io.Serializable;
 
 public class Pack implements Serializable {
-    private PackTypes type;
+    private PackType type;
     private String content;
 
-    public Pack(PackTypes type, String content) {
+    public Pack(PackType type, String content) {
         this.type = type;
         this.content = content;
     }
 
 
-    public PackTypes getType() {
+    public PackType getType() {
         return type;
     }
 
